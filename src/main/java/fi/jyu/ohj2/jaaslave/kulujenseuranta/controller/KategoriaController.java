@@ -2,9 +2,11 @@ package fi.jyu.ohj2.jaaslave.kulujenseuranta.controller;
 
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
+import javafx.stage.Stage;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -39,6 +41,12 @@ public class KategoriaController implements Initializable {
         lisaaUusiKategoriaPainike.setOnAction(event -> { IO.println("Lisätään uusi kategoria lisäyksen nimikentän arvon pohjalta..."); });
         poistaKategoriaPainike.setOnAction(event -> { IO.println("Poistetaan valittu kategoria..."); });
         tallennaMuutoksetKategoriaanPainike.setOnAction(event -> { IO.println("Tallennetaan muutokset kategoriaan..."); });
-        poistuKategoriaNakymastaPainike.setOnAction(event -> { IO.println("Suljetaan kategorianäkymä..."); });
+        poistuKategoriaNakymastaPainike.setOnAction(event -> { sulje(); });
+    }
+
+    private void sulje() {
+        Scene scene = uusiKategoriaKentta.getScene();
+        Stage ikkuna = (Stage) scene.getWindow();
+        ikkuna.close();
     }
 }
