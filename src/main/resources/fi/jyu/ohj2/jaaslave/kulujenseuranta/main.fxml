@@ -1,15 +1,90 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.layout.VBox?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.control.Button?>
 <?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Hyperlink?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TitledPane?>
+<?import javafx.scene.control.ToggleButton?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
 
-<VBox alignment="CENTER" spacing="20.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fi.jyu.ohj2.jaaslave.kulujenseuranta.MainController">
-    <padding>
-        <Insets bottom="20.0" left="20.0" right="20.0" top="20.0"/>
-    </padding>
-
-    <Label text="Hello, JavaFX!"/>
-    <Button text="Click Me!"/>
+<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="500.0" prefWidth="1150.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fi.jyu.ohj2.jaaslave.kulujenseuranta.controller.MainController">
+   <children>
+      <HBox prefHeight="75.0" prefWidth="200.0">
+         <children>
+            <HBox prefHeight="100.0" prefWidth="200.0">
+               <children>
+                  <Label minWidth="65.0" text="Alkupvm" />
+                  <DatePicker fx:id="alkuPvmKentta" />
+               </children>
+            </HBox>
+            <HBox prefHeight="75.0" prefWidth="200.0">
+               <children>
+                  <Label minWidth="70.0" text="Loppupvm" />
+                  <DatePicker fx:id="loppuPvmKentta" />
+               </children>
+               <HBox.margin>
+                  <Insets left="10.0" />
+               </HBox.margin>
+            </HBox>
+            <HBox prefHeight="75.0" prefWidth="200.0">
+               <children>
+                  <ComboBox fx:id="kategoriaValitsin" prefWidth="150.0" promptText="Kaikki kategoriat">
+                     <HBox.margin>
+                        <Insets left="10.0" />
+                     </HBox.margin>
+                  </ComboBox>
+               </children>
+            </HBox>
+            <HBox prefHeight="75.0" prefWidth="175.0">
+               <children>
+                  <Hyperlink fx:id="muokkaaKategorioitaLinkki" text="Muokkaa kategorioita" />
+               </children>
+            </HBox>
+            <HBox prefHeight="75.0" prefWidth="125.0">
+               <children>
+                  <ToggleButton mnemonicParsing="false" text="Vain pakolliset" />
+               </children>
+            </HBox>
+            <HBox prefHeight="75.0" prefWidth="200.0" spacing="7.0">
+               <children>
+                  <Button fx:id="lisaaTuloPainike" minWidth="85.0" mnemonicParsing="false" style="-fx-background-color: lightgreen;" text="+ Lisää tulo" />
+                  <Button fx:id="lisaaMenoPainike" mnemonicParsing="false" text="+ Lisää meno" />
+               </children>
+            </HBox>
+         </children>
+      </HBox>
+      <TableView fx:id="tapahtumaListaus" prefHeight="300.0" prefWidth="200.0">
+        <columns>
+          <TableColumn prefWidth="125.0" text="Tulo/Meno" />
+          <TableColumn prefWidth="100.0" text="pvm" />
+            <TableColumn prefWidth="100.0" text="Summa" />
+            <TableColumn prefWidth="100.0" text="Aihe" />
+            <TableColumn prefWidth="100.0" text="Kategoria" />
+        </columns>
+      </TableView>
+      <HBox prefHeight="100.0" prefWidth="200.0" spacing="25.0">
+         <children>
+            <TitledPane animated="false" text="Menot yhteensä">
+              <content>
+                <AnchorPane fx:id="menotYhteensaNakyma" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+              </content>
+            </TitledPane>
+            <TitledPane animated="false" text="Tulot yhteensä">
+              <content>
+                <AnchorPane fx:id="tulotYhteensaNakyma" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+              </content>
+            </TitledPane>
+         </children>
+      </HBox>
+   </children>
+   <padding>
+      <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+   </padding>
 </VBox>
