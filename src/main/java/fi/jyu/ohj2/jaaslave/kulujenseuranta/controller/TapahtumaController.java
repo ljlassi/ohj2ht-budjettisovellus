@@ -36,10 +36,10 @@ public class TapahtumaController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         // Write initialization code here
-        paivamaaraValitsin.setOnAction(event -> {});
-        poistaTapahtumaPainike.setOnAction(event -> {});
-        lisaaTapahtumaPainike.setOnAction(event -> {});
-        peruutaLisaysPainike.setOnAction(event -> {});
+        paivamaaraValitsin.setOnAction(event -> { IO.println("Päivämäräävalitsimen arvoa on muokattu..."); });
+        poistaTapahtumaPainike.setOnAction(event -> { IO.println("Poistetaan tämä muokattavana ollut tapahtuma kokonaan..."); });
+        lisaaTapahtumaPainike.setOnAction(event -> { IO.println("Vahvistetaan tapahtuman lisäys..."); });
+        peruutaLisaysPainike.setOnAction(event -> { IO.println("Peruataan tapahtuman lisäys ja poistutaan näkymästä..."); });
     }
 
 }

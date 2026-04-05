@@ -39,11 +39,11 @@ public class MainController implements Initializable {
     public void initialize(URL url, ResourceBundle resourceBundle) {
         // Write initialization code here
 
-        alkuPvmKentta.setOnAction(event -> {});
-        loppuPvmKentta.setOnAction(event -> {});
-        muokkaaKategorioitaLinkki.setOnAction(event -> {});
-        lisaaTuloPainike.setOnAction(event -> {});
-        lisaaMenoPainike.setOnAction(event -> {});
+        alkuPvmKentta.setOnAction(event -> { IO.println("Alkupäivämääräkenttän arvoa muokattu..."); });
+        loppuPvmKentta.setOnAction(event -> { IO.println("Loppupäivämääräkentän arvoa muokattu..."); });
+        muokkaaKategorioitaLinkki.setOnAction(event -> { IO.println("Kategoroiden muokkausnäkymä avataan..."); });
+        lisaaTuloPainike.setOnAction(event -> { IO.println("Tapahtuman lisäysnäkymä avataan, alustaen niin että kyseessä tulo..."); });
+        lisaaMenoPainike.setOnAction(event -> { IO.println("Tapahtuman lisäysnäkymä avataan, alustaen niin että kyseessä meno..."); });
 
 
     }

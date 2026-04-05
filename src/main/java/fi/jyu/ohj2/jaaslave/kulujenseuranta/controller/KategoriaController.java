@@ -36,9 +36,9 @@ public class KategoriaController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         // Write initialization code here
-        lisaaUusiKategoriaPainike.setOnAction(event -> {});
-        poistaKategoriaPainike.setOnAction(event -> {});
-        tallennaMuutoksetKategoriaanPainike.setOnAction(event -> {});
-        poistuKategoriaNakymastaPainike.setOnAction(event -> {});
+        lisaaUusiKategoriaPainike.setOnAction(event -> { IO.println("Lisätään uusi kategoria lisäyksen nimikentän arvon pohjalta..."); });
+        poistaKategoriaPainike.setOnAction(event -> { IO.println("Poistetaan valittu kategoria..."); });
+        tallennaMuutoksetKategoriaanPainike.setOnAction(event -> { IO.println("Tallennetaan muutokset kategoriaan..."); });
+        poistuKategoriaNakymastaPainike.setOnAction(event -> { IO.println("Suljetaan kategorianäkymä..."); });
     }
 }
