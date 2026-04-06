@@ -102,6 +102,8 @@ public class MainController implements Initializable {
         if(this.seuranta.getTapahtumat().isEmpty()) {
             Kategoria esimerkkiKategoria = new Kategoria("Yleinen");
             this.seuranta.lisaaKategoria(esimerkkiKategoria);
+            Kategoria esimerkkiKategoria2 = new Kategoria("Asuminen");
+            this.seuranta.lisaaKategoria(esimerkkiKategoria2);
             Tapahtuma esimerkkiTapahtuma = new Tapahtuma();
             esimerkkiTapahtuma.setNimi("Esimerkkitapahtuma");
             esimerkkiTapahtuma.setSumma(100.0);
@@ -128,7 +130,7 @@ public class MainController implements Initializable {
                     tapahtumaListaus.getColumns().add(summaSarake);
 
                     TableColumn<Tapahtuma, String> kategoriaSarake = new TableColumn<>("Kategoria");
-                    kategoriaSarake.setCellValueFactory(cd -> cd.getValue().getKategoria().nimiProperty());
+                    kategoriaSarake.setCellValueFactory(cd -> (cd.getValue().getKategoria() != null ? cd.getValue().getKategoria().nimiProperty() : null));
                     tapahtumaListaus.getColumns().add(kategoriaSarake);
 
                     tapahtumaListaus.setRowFactory(tv -> {

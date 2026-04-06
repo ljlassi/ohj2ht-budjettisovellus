@@ -9,6 +9,7 @@ public class Tapahtuma {
     private final StringProperty nimi = new SimpleStringProperty("");
     private final DoubleProperty summa = new SimpleDoubleProperty(0.0);
     private final ObjectProperty<LocalDate> paivamaara = new SimpleObjectProperty<LocalDate>(LocalDate.now());
+
     private final ObjectProperty<Kategoria> kategoria = new SimpleObjectProperty<Kategoria>(new Kategoria("Yleinen"));
 
     public Tapahtuma() {
@@ -61,6 +62,7 @@ public class Tapahtuma {
     public void setKategoria(Kategoria kategoria) {
         this.kategoria.set(kategoria);
     }
+
 
 
 }

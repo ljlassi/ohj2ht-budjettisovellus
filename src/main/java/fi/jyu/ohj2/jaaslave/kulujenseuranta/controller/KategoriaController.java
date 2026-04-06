@@ -5,12 +5,11 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.stage.Stage;
 
 import java.net.URL;
+import java.util.Optional;
 import java.util.ResourceBundle;
 
 public class KategoriaController implements Initializable {
@@ -22,7 +21,7 @@ public class KategoriaController implements Initializable {
     Button lisaaUusiKategoriaPainike;
 
     @FXML
-    ComboBox<String> muokattavanKategorianValitsin;
+    ComboBox<Kategoria> muokattavanKategorianValitsin;
 
     @FXML
     TextField kategorianNimenMuokkain;
@@ -41,9 +40,9 @@ public class KategoriaController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        // Write initialization code here
+
         lisaaUusiKategoriaPainike.setOnAction(event -> { lisaaUusiKategoria(); });
-        poistaKategoriaPainike.setOnAction(event -> { IO.println("Poistetaan valittu kategoria..."); });
+        poistaKategoriaPainike.setOnAction(event -> { poistaKategoria(); });
         tallennaMuutoksetKategoriaanPainike.setOnAction(event -> { IO.println("Tallennetaan muutokset kategoriaan..."); });
         poistuKategoriaNakymastaPainike.setOnAction(event -> { sulje(); });
 
@@ -70,10 +69,22 @@ public class KategoriaController implements Initializable {
 
     private void paivitaNakyma() {
         if(this.kategoriat != null) {
-            this.kategoriat.forEach(k -> {
-                muokattavanKategorianValitsin.getItems().add(k.getNimi());
-            });
+            muokattavanKategorianValitsin.setItems(this.kategoriat);
         }
+    }
+
+    private void poistaKategoria() {
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Varmistusdialogi");
+        alert.setHeaderText("Haluatko varmasti poistaa kategorian?");
+        alert.setContentText("Kateogoria " + muokattavanKategorianValitsin.getValue().getNimi() + " poistetaan.");
+
+        Optional<ButtonType> result = alert.showAndWait();
+        if (result.get() != ButtonType.OK){
+            return;
+        }
+        Kategoria poistettavaKategoria = muokattavanKategorianValitsin.getValue();
+        this.kategoriat.remove(poistettavaKategoria);
     }
 
 }

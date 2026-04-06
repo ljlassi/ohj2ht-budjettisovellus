@@ -6,14 +6,12 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.DatePicker;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.stage.Stage;
 
 import java.net.URL;
 import java.time.LocalDate;
+import java.util.Optional;
 import java.util.ResourceBundle;
 
 public class TapahtumaController implements Initializable {
@@ -47,7 +45,7 @@ public class TapahtumaController implements Initializable {
     public void initialize(URL url, ResourceBundle resourceBundle) {
 
         paivamaaraValitsin.setOnAction(event -> { IO.println("Päivämäräävalitsimen arvoa on muokattu..."); });
-        poistaTapahtumaPainike.setOnAction(event -> { IO.println("Poistetaan tämä muokattavana ollut tapahtuma kokonaan..."); });
+        poistaTapahtumaPainike.setOnAction(event -> { poistaTapahtuma(); });
         lisaaTapahtumaPainike.setOnAction(event -> { lisaaTapahtuma(); });
         peruutaLisaysPainike.setOnAction(event -> { sulje(); });
 
@@ -87,6 +85,21 @@ public class TapahtumaController implements Initializable {
         Scene scene = tapahtumanAiheKentta.getScene();
         Stage ikkuna = (Stage) scene.getWindow();
         ikkuna.close();
+    }
+
+    private void poistaTapahtuma() {
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Varmistusdialogi");
+        alert.setHeaderText("Haluatko varmasti poistaa tapahtuman?");
+        alert.setContentText("Tapahtuma " + tapahtuma.getNimi() + " poistetaan.");
+
+        Optional<ButtonType> result = alert.showAndWait();
+        if (result.get() != ButtonType.OK){
+            return;
+        }
+        this.tapahtuma.setNimi("");
+        this.tapahtuma = null;
+        this.sulje();
     }
 
 }
