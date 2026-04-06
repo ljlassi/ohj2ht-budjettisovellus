@@ -1,5 +1,7 @@
 package fi.jyu.ohj2.jaaslave.kulujenseuranta.controller;
 
+import fi.jyu.ohj2.jaaslave.kulujenseuranta.model.Kategoria;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Scene;
@@ -20,7 +22,7 @@ public class KategoriaController implements Initializable {
     Button lisaaUusiKategoriaPainike;
 
     @FXML
-    ComboBox muokattavanKategorianValitsin;
+    ComboBox<String> muokattavanKategorianValitsin;
 
     @FXML
     TextField kategorianNimenMuokkain;
@@ -34,14 +36,19 @@ public class KategoriaController implements Initializable {
     @FXML
     Button poistuKategoriaNakymastaPainike;
 
+    private ObservableList<Kategoria> kategoriat;
+
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         // Write initialization code here
-        lisaaUusiKategoriaPainike.setOnAction(event -> { IO.println("Lisätään uusi kategoria lisäyksen nimikentän arvon pohjalta..."); });
+        lisaaUusiKategoriaPainike.setOnAction(event -> { lisaaUusiKategoria(); });
         poistaKategoriaPainike.setOnAction(event -> { IO.println("Poistetaan valittu kategoria..."); });
         tallennaMuutoksetKategoriaanPainike.setOnAction(event -> { IO.println("Tallennetaan muutokset kategoriaan..."); });
         poistuKategoriaNakymastaPainike.setOnAction(event -> { sulje(); });
+
+        paivitaNakyma();
+
     }
 
     private void sulje() {
@@ -49,4 +56,24 @@ public class KategoriaController implements Initializable {
         Stage ikkuna = (Stage) scene.getWindow();
         ikkuna.close();
     }
+
+    public void setKategoriat(ObservableList<Kategoria> kategoriat) {
+        this.kategoriat = kategoriat;
+    }
+
+    private void lisaaUusiKategoria() {
+        String nimi = uusiKategoriaKentta.getText();
+        Kategoria uusiKategoria = new Kategoria(nimi);
+        this.kategoriat.add(uusiKategoria);
+        paivitaNakyma();
+    }
+
+    private void paivitaNakyma() {
+        if(this.kategoriat != null) {
+            this.kategoriat.forEach(k -> {
+                muokattavanKategorianValitsin.getItems().add(k.getNimi());
+            });
+        }
+    }
+
 }
