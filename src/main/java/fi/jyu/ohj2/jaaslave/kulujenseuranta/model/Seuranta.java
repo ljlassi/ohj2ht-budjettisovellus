@@ -14,7 +14,8 @@ public class Seuranta {
 
     private final ObservableList<Kategoria> kategoriat = FXCollections.observableArrayList(
             kategoria -> new Observable[] {
-                    kategoria.nimiProperty()
+                    kategoria.nimiProperty(),
+                    kategoria.pakollinenProperty()
             }
     );
     private final ObservableList<Tapahtuma> tapahtumat = FXCollections.observableArrayList(
@@ -40,6 +41,14 @@ public class Seuranta {
                                 t.setKategoria(null);
                             }
                         });
+                } else if(change.wasUpdated()) {
+                    for (int i = change.getFrom(); i < change.getTo(); i++) {
+                        Kategoria k = change.getList().get(i);
+                        this.tapahtumat.forEach(t -> {
+                            if(t.getKategoria() == k)
+                                t.setKategoria(k);
+                        });
+                    }
                 }
             }
             this.tallennaKategoriat();

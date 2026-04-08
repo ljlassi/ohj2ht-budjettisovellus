@@ -2,6 +2,7 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TextField?>
@@ -37,13 +38,18 @@
          <children>
             <Label text="Kategorian nimi" />
             <TextField fx:id="kategorianNimenMuokkain" />
+            <CheckBox fx:id="kategoriaPakollinenCheckBox" mnemonicParsing="false" text="Pakollinen">
+               <HBox.margin>
+                  <Insets top="5.0" />
+               </HBox.margin>
+            </CheckBox>
          </children>
       </HBox>
       <HBox prefHeight="100.0" prefWidth="200.0" spacing="15.0">
          <children>
             <Button fx:id="poistaKategoriaPainike" minWidth="100.0" mnemonicParsing="false" style="-fx-background-color: red;" text="Poista kategoria" textFill="WHITE" />
-            <Button fx:id="tallennaMuutoksetKategoriaanPainike" mnemonicParsing="false" style="-fx-background-color: green;" text="Tallenna" textFill="WHITE" />
-            <Button fx:id="poistuKategoriaNakymastaPainike" mnemonicParsing="false" text="Peruuta" />
+            <Button fx:id="tallennaMuutoksetKategoriaanPainike" mnemonicParsing="false" style="-fx-background-color: green;" text="Muokkaa kategoriaa" textFill="WHITE" />
+            <Button fx:id="poistuKategoriaNakymastaPainike" mnemonicParsing="false" text="Poistu" />
          </children>
       </HBox>
    </children>

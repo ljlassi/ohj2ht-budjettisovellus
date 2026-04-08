@@ -1,16 +1,20 @@
 package fi.jyu.ohj2.jaaslave.kulujenseuranta.model;
 
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
 public class Kategoria {
 
     private final StringProperty nimi = new SimpleStringProperty("");
+    private final BooleanProperty pakollinen = new SimpleBooleanProperty(false);
 
     public Kategoria() {}
 
-    public Kategoria(String nimi) {
+    public Kategoria(String nimi, boolean pakollinen) {
         this.nimi.set(nimi);
+        this.pakollinen.set(pakollinen);
     }
 
     public void setNimi(String nimi) {
@@ -23,6 +27,18 @@ public class Kategoria {
 
     public StringProperty nimiProperty() {
         return this.nimi;
+    }
+
+    public void setPakollinen(boolean pakollinen) {
+        this.pakollinen.set(pakollinen);
+    }
+
+    public boolean getPakollinen() {
+        return this.pakollinen.get();
+    }
+
+    public BooleanProperty pakollinenProperty() {
+        return this.pakollinen;
     }
 
     public TarkistusVirhe tarkistaVirheet() {

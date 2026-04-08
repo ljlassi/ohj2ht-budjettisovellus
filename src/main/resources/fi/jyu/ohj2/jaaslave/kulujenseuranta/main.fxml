@@ -66,7 +66,7 @@
          <children>
             <TitledPane animated="false" text="Menot yhteensä">
               <content>
-                <AnchorPane fx:id="menotYhteensaNakyma" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                      <children>
                         <Text fx:id="menotYhteensaTeksti" layoutX="93.0" layoutY="45.0" strokeType="OUTSIDE" strokeWidth="0.0" text="0">
                            <font>
@@ -78,7 +78,7 @@
             </TitledPane>
             <TitledPane animated="false" text="Tulot yhteensä">
               <content>
-                <AnchorPane fx:id="tulotYhteensaNakyma" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                      <children>
                         <Text fx:id="tulotYhteensaTeksti" layoutX="93.0" layoutY="45.0" strokeType="OUTSIDE" strokeWidth="0.0" text="0">
                            <font>

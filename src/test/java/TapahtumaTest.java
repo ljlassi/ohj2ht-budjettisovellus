@@ -39,7 +39,8 @@ public class TapahtumaTest {
     @Test
     void kategoriaTesti() {
         String kategorianNimi = "Testikategoria";
-        Kategoria kategoria = new Kategoria(kategorianNimi);
+        boolean pakollinen = true;
+        Kategoria kategoria = new Kategoria(kategorianNimi, pakollinen);
         Tapahtuma tapahtuma = new Tapahtuma();
         tapahtuma.setKategoria(kategoria);
         assertEquals(kategoria, tapahtuma.getKategoria(), "Tapahtuman kategoria-olioiden kuuluisi täsmätä.");

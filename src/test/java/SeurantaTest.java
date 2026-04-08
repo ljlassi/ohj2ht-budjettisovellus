@@ -15,7 +15,8 @@ public class SeurantaTest {
         Seuranta seuranta = new Seuranta(mock);
 
         String testiNimi = "TestiKategoria";
-        Kategoria kategoria = new Kategoria(testiNimi);
+        boolean pakollinen = true;
+        Kategoria kategoria = new Kategoria(testiNimi, pakollinen);
 
         seuranta.lisaaKategoria(kategoria);
 
@@ -29,8 +30,9 @@ public class SeurantaTest {
         MockSeurantaRepository mock = new MockSeurantaRepository();
         Seuranta seuranta = new Seuranta(mock);
 
+        boolean pakollinen = false;
         String testiNimi = "     ";
-        Kategoria kategoria = new Kategoria(testiNimi);
+        Kategoria kategoria = new Kategoria(testiNimi, false);
 
         seuranta.lisaaKategoria(kategoria);
         assertEquals(0, seuranta.getKategoriat().size(), "Ilman nimeä tai tyhjällä sellaisella olevat kategoriat eivät saisi tallentua listaan.");
@@ -42,7 +44,8 @@ public class SeurantaTest {
         Seuranta seuranta = new Seuranta(mock);
 
         String testiKategorianNimi = "Yleiskategoria";
-        Kategoria testiKategoria = new Kategoria(testiKategorianNimi);
+        boolean pakollinen = true;
+        Kategoria testiKategoria = new Kategoria(testiKategorianNimi, pakollinen);
 
         String testiNimi = "Testi Tapahtuma";
         double testiSumma = -199.95;

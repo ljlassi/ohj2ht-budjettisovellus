@@ -25,6 +25,7 @@ public class MockSeurantaRepository implements SeurantaRepository {
         for (Kategoria kategoria : kategoriat) {
             Kategoria kopio = new Kategoria();
             kopio.setNimi(kategoria.getNimi());
+            kopio.setPakollinen(kategoria.getPakollinen());
             tallennetutKategoriat.add(kopio);
         }
 

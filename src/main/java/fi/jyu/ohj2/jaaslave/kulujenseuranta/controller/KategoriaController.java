@@ -36,6 +36,9 @@ public class KategoriaController implements Initializable {
     @FXML
     Button poistuKategoriaNakymastaPainike;
 
+    @FXML
+    CheckBox kategoriaPakollinenCheckBox;
+
     private ObservableList<Kategoria> kategoriat;
 
     private Kategoria valittuKategoria;
@@ -70,6 +73,7 @@ public class KategoriaController implements Initializable {
     private void naytaValitunKategorianTiedot() {
         this.valittuKategoria = muokattavanKategorianValitsin.getValue();
         this.kategorianNimenMuokkain.setText(this.valittuKategoria.getNimi());
+        this.kategoriaPakollinenCheckBox.setSelected(this.valittuKategoria.getPakollinen());
     }
 
     private void tallennaMuutoksetKategoriaan() {
@@ -79,9 +83,11 @@ public class KategoriaController implements Initializable {
             return;
         }
         String uusiNimi = this.kategorianNimenMuokkain.getText();
+        boolean onkoPakollinen = this.kategoriaPakollinenCheckBox.isSelected();
         this.kategoriat.forEach(k -> {
             if(k == this.valittuKategoria) {
                 k.setNimi(uusiNimi);
+                k.setPakollinen(onkoPakollinen);
             }
         });
     }
@@ -93,7 +99,7 @@ public class KategoriaController implements Initializable {
             return;
         }
         String nimi = uusiKategoriaKentta.getText();
-        Kategoria uusiKategoria = new Kategoria(nimi);
+        Kategoria uusiKategoria = new Kategoria(nimi, false);
         TarkistusVirhe sisainenValidointi = uusiKategoria.tarkistaVirheet();
         if(sisainenValidointi != null) {
             naytaValidointiVirheIlmoitus(sisainenValidointi);

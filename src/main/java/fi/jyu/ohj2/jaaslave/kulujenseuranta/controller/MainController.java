@@ -14,8 +14,8 @@ import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.control.cell.CheckBoxTableCell;
 import javafx.scene.input.MouseButton;
-import javafx.scene.layout.AnchorPane;
 import javafx.scene.text.Text;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -50,13 +50,7 @@ public class MainController implements Initializable {
     private TableView<Tapahtuma> tapahtumaListaus;
 
     @FXML
-    private AnchorPane menotYhteensaNakyma;
-
-    @FXML
     private Text menotYhteensaTeksti;
-
-    @FXML
-    private AnchorPane tulotYhteensaNakyma;
 
     @FXML
     private Text tulotYhteensaTeksti;
@@ -108,16 +102,16 @@ public class MainController implements Initializable {
         Kategoria esimerkkiKategoria2 = null; // Tässä vähän hassu ratkaisu mutta halutaan alustaa nämä if-lausekkeen
         Kategoria esimerkkiKategoria = null;  // ulkopuolella koska samat kategoriat menee tarvittaessa esimerkkitapahtumiin.
         if(this.seuranta.getKategoriat().isEmpty()) {
-            esimerkkiKategoria2 = new Kategoria("Asuminen");
-            esimerkkiKategoria = new Kategoria("Yleinen");
+            esimerkkiKategoria2 = new Kategoria("Asuminen", true);
+            esimerkkiKategoria = new Kategoria("Yleinen", false);
             this.seuranta.lisaaKategoria(esimerkkiKategoria);
             this.seuranta.lisaaKategoria(esimerkkiKategoria2);
         }
 
         if(this.seuranta.getTapahtumat().isEmpty()) {
             if(this.seuranta.getKategoriat().isEmpty()) { // Mikäli tapahtumat ja kategoriat on molemmat tyhjiä
-                esimerkkiKategoria2 = new Kategoria("Asuminen");
-                esimerkkiKategoria = new Kategoria("Yleinen");
+                esimerkkiKategoria2 = new Kategoria("Asuminen", true);
+                esimerkkiKategoria = new Kategoria("Yleinen", false);
                 this.seuranta.lisaaKategoria(esimerkkiKategoria);
                 this.seuranta.lisaaKategoria(esimerkkiKategoria2);
             } else {
@@ -149,6 +143,12 @@ public class MainController implements Initializable {
         TableColumn<Tapahtuma, String> kategoriaSarake = new TableColumn<>("Kategoria");
         kategoriaSarake.setCellValueFactory(cd -> (cd.getValue().getKategoria() != null ? cd.getValue().getKategoria().nimiProperty() : null));
         tapahtumaListaus.getColumns().add(kategoriaSarake);
+
+        TableColumn<Tapahtuma, Boolean> pakollinenMenoSarake = new TableColumn<>("Pakollinen menoerä");
+        pakollinenMenoSarake.setCellValueFactory(cd -> (cd.getValue().getKategoria() != null ? cd.getValue().getKategoria().pakollinenProperty() : null));
+        pakollinenMenoSarake.setCellFactory(CheckBoxTableCell.forTableColumn(pakollinenMenoSarake));
+        pakollinenMenoSarake.setEditable(false);
+        tapahtumaListaus.getColumns().add(pakollinenMenoSarake);
 
         tapahtumaListaus.setRowFactory(tv -> {
 
