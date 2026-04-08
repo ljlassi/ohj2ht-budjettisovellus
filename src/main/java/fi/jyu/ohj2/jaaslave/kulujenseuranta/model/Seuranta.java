@@ -1,5 +1,7 @@
 package fi.jyu.ohj2.jaaslave.kulujenseuranta.model;
 
+import fi.jyu.ohj2.jaaslave.kulujenseuranta.persistence.RepositoryException;
+import fi.jyu.ohj2.jaaslave.kulujenseuranta.persistence.SeurantaRepository;
 import javafx.beans.Observable;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
@@ -7,7 +9,6 @@ import javafx.collections.ObservableList;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 public class Seuranta {
 
@@ -25,7 +26,11 @@ public class Seuranta {
             }
     );
 
-    public Seuranta() {
+    private final SeurantaRepository repository;
+
+    public Seuranta(SeurantaRepository repository) {
+
+        this.repository = repository;
 
         this.kategoriat.addListener((ListChangeListener<Kategoria>) change -> {
             while(change.next()) {
@@ -37,21 +42,23 @@ public class Seuranta {
                         });
                 }
             }
+            this.tallennaKategoriat();
+            if(!this.getTapahtumat().isEmpty()) {
+                this.tallennaTapahtumat(); // Tallennetaan myös tapahtumat (mikäli niitä on), siltä varala että kategoriamuutokset heijastuu myös niihin.
+            }
         } );
 
-        this.tapahtumat.addListener(new ListChangeListener<Tapahtuma>() {
-            @Override
-            public void onChanged(Change<? extends Tapahtuma> c) {
-                while (c.next()) {
-                    if (c.wasUpdated()) {
-                        for (int i = c.getFrom(); i < c.getTo(); ++i) {
-                            if(tapahtumat.get(i).getNimi().isBlank()) { // Tämä on vähän hassusti tehty ja ehkä paranellaan myöhemmin, toimii sinällään.
-                                tapahtumat.remove(tapahtumat.get(i));   // Ongelmana siis ylläolevaan liittyen että poisto ei tahdo välittyä aina, mutta nimen tyhjennys kyllä välittyy.
-                            }
+        this.tapahtumat.addListener((ListChangeListener<Tapahtuma>) change -> {
+            while(change.next()) {
+                if (change.wasUpdated()) {
+                    for (int i = change.getFrom(); i < change.getTo(); ++i) {
+                        if(tapahtumat.get(i).getNimi().isBlank()) { // Tämä on vähän hassusti tehty ja ehkä paranellaan myöhemmin, toimii sinällään.
+                            tapahtumat.remove(tapahtumat.get(i));   // Ongelmana siis ylläolevaan liittyen että poisto ei tahdo välittyä aina, mutta nimen tyhjennys kyllä välittyy.
                         }
                     }
                 }
             }
+            this.tallennaTapahtumat();
         });
 
     }
@@ -69,6 +76,12 @@ public class Seuranta {
     }
 
     public void lisaaKategoria(Kategoria kategoria) {
+        if(kategoria == null) {
+            return;
+        }
+        if (kategoria.getNimi().isBlank()) {
+            return;
+        }
         this.kategoriat.add(kategoria);
     }
 
@@ -79,5 +92,41 @@ public class Seuranta {
         }
         return nimet;
     }
+
+    public void lataaTapahtumat() {
+        try {
+            List<Tapahtuma> kaikkiTapahtumat = repository.lataaTapahtumat();
+            tapahtumat.addAll(kaikkiTapahtumat);
+        } catch(RepositoryException e) {
+            IO.println(e.getMessage());
+        }
+    }
+
+    public void tallennaTapahtumat() {
+        try {
+            repository.tallennaTapahtumat(this.getTapahtumat());
+        } catch(RepositoryException e) {
+            IO.println(e.getMessage());
+        }
+    }
+
+    public void lataaKategoriat() {
+        try {
+            List<Kategoria> kaikkiKategoriat = repository.lataaKategoriat();
+            kategoriat.addAll(kaikkiKategoriat);
+        } catch(RepositoryException e) {
+            IO.println(e.getMessage());
+        }
+    }
+
+    public void tallennaKategoriat() {
+        try {
+            repository.tallennaKategoriat(this.getKategoriat());
+        } catch(RepositoryException e) {
+            IO.println(e.getMessage());
+        }
+    }
+
+
 
 }

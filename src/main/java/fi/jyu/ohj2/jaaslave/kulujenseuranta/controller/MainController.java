@@ -4,6 +4,7 @@ import fi.jyu.ohj2.jaaslave.kulujenseuranta.App;
 import fi.jyu.ohj2.jaaslave.kulujenseuranta.model.Kategoria;
 import fi.jyu.ohj2.jaaslave.kulujenseuranta.model.Seuranta;
 import fi.jyu.ohj2.jaaslave.kulujenseuranta.model.Tapahtuma;
+import fi.jyu.ohj2.jaaslave.kulujenseuranta.persistence.JsonSeurantaRepository;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
@@ -18,17 +19,11 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.text.Text;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-import tools.jackson.core.JacksonException;
-import tools.jackson.core.type.TypeReference;
-import tools.jackson.databind.ObjectMapper;
 
 import java.io.IOException;
 import java.net.URL;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.ResourceBundle;
 
 public class MainController implements Initializable {
@@ -72,7 +67,8 @@ public class MainController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
 
-        this.seuranta = new Seuranta();
+        // Alustetaan seuranta ja tiedostojen tallennus.
+        this.seuranta = new Seuranta(new JsonSeurantaRepository(Path.of("kategoriat.json"), Path.of("tapahtumat.json")));
 
         alustaKayttoLiittyma();
 
@@ -88,14 +84,10 @@ public class MainController implements Initializable {
 
         this.seuranta.getTapahtumat().addListener((ListChangeListener<Tapahtuma>) change -> {
             paivitaNakyma();
-            tallennaTapahtumatTiedostoon();
         });
 
         this.seuranta.getKategoriat().addListener((ListChangeListener<Kategoria>) change -> {
             paivitaNakyma();
-            tallennaKategoriatTiedostoon();
-            paivitaNakyma();
-            tallennaTapahtumatTiedostoon(); // Tallennetaan myös tapahtumat tässä kohtaa siltä varalta että niiden kategorioita on muokattu.
         });
 
 
@@ -110,8 +102,8 @@ public class MainController implements Initializable {
         this.alkuPvmKentta.setValue(LocalDate.of(2026, 1, 1)); // TODO: Filtteröinnit kuntoon
         this.loppuPvmKentta.setValue(LocalDate.now());
 
-        lataaTapahtumatTiedostosta();
-        lataaKategoriatTiedostosta();
+        this.seuranta.lataaKategoriat();
+        this.seuranta.lataaTapahtumat();
 
         Kategoria esimerkkiKategoria2 = null; // Tässä vähän hassu ratkaisu mutta halutaan alustaa nämä if-lausekkeen
         Kategoria esimerkkiKategoria = null;  // ulkopuolella koska samat kategoriat menee tarvittaessa esimerkkitapahtumiin.
@@ -123,8 +115,14 @@ public class MainController implements Initializable {
         }
 
         if(this.seuranta.getTapahtumat().isEmpty()) {
-            this.seuranta.lisaaKategoria(esimerkkiKategoria);
-            this.seuranta.lisaaKategoria(esimerkkiKategoria2);
+            if(this.seuranta.getKategoriat().isEmpty()) { // Mikäli tapahtumat ja kategoriat on molemmat tyhjiä
+                esimerkkiKategoria2 = new Kategoria("Asuminen");
+                esimerkkiKategoria = new Kategoria("Yleinen");
+                this.seuranta.lisaaKategoria(esimerkkiKategoria);
+                this.seuranta.lisaaKategoria(esimerkkiKategoria2);
+            } else {
+                esimerkkiKategoria = this.seuranta.getKategoriat().getFirst();
+            }
             Tapahtuma esimerkkiTapahtuma = new Tapahtuma();
             esimerkkiTapahtuma.setNimi("Esimerkkitapahtuma");
             esimerkkiTapahtuma.setSumma(100.0);
@@ -269,49 +267,5 @@ public class MainController implements Initializable {
 
         tapahtumaListaus.refresh();
 
-    }
-
-    private void lataaTapahtumatTiedostosta() {
-        Path path = Path.of("tapahtumat.json");
-        if (Files.notExists(path)) {
-            return;
-        }
-        try {
-            ObjectMapper mapper = new ObjectMapper();
-            List<Tapahtuma> kaikkiTapahtumat = mapper.readValue(path.toFile(), new TypeReference<>() {});
-            kaikkiTapahtumat.forEach(tapahtuma-> {
-                this.seuranta.lisaaTapahtuma(tapahtuma);
-            });
-        } catch (JacksonException je) {
-            IO.println("JSONin lukeminen epäonnistui: " + je.getMessage());
-        }
-    }
-
-    private void lataaKategoriatTiedostosta() {
-        Path path = Path.of("kategoriat.json");
-        if (Files.notExists(path)) {
-            return;
-        }
-        try {
-            ObjectMapper mapper = new ObjectMapper();
-            List<Kategoria> kaikkiKategoriat = mapper.readValue(path.toFile(), new TypeReference<>() {});
-            kaikkiKategoriat.forEach(kategoria-> {
-                this.seuranta.lisaaKategoria(kategoria);
-            });
-        } catch (JacksonException je) {
-            IO.println("JSONin lukeminen epäonnistui: " + je.getMessage());
-        }
-    }
-
-    private void tallennaKategoriatTiedostoon() {
-        List<Kategoria> kategoriat = new ArrayList<>(this.seuranta.getKategoriat());
-        ObjectMapper mapper = new ObjectMapper();
-        mapper.writeValue(Path.of("kategoriat.json"), kategoriat);
-    }
-
-    private void tallennaTapahtumatTiedostoon() {
-        List<Tapahtuma> tapahtumat = new ArrayList<>(this.seuranta.getTapahtumat());
-        ObjectMapper mapper = new ObjectMapper();
-        mapper.writeValue(Path.of("tapahtumat.json"), tapahtumat);
     }
 }
