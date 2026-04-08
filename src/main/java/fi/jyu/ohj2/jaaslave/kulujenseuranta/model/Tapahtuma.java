@@ -64,5 +64,23 @@ public class Tapahtuma {
     }
 
 
+    public TarkistusVirhe tarkistaVirheet() {
+        if(getNimi().isBlank()) {
+            return TarkistusVirhe.NIMI_TYHJA;
+        }
+        if(getNimi().length() > 255) {
+            return TarkistusVirhe.NIMI_EPAVALIDI;
+        }
+        if(getPaivamaara() == null) {
+            return TarkistusVirhe.PAIVAMAARA_TYHJA;
+        }
+        if(getPaivamaara().isAfter(LocalDate.now())) {
+            return TarkistusVirhe.PAIVAMAARA_EPAVALIDI;
+        }
+        if(getKategoria() == null) {
+            return TarkistusVirhe.KATEGORIA_TYHJA;
+        }
+        return null;
+    }
 
 }

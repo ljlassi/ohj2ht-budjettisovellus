@@ -1,6 +1,7 @@
 package fi.jyu.ohj2.jaaslave.kulujenseuranta.controller;
 
 import fi.jyu.ohj2.jaaslave.kulujenseuranta.model.Kategoria;
+import fi.jyu.ohj2.jaaslave.kulujenseuranta.model.TarkistusVirhe;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -72,7 +73,9 @@ public class KategoriaController implements Initializable {
     }
 
     private void tallennaMuutoksetKategoriaan() {
-        if(this.valittuKategoria == null) {
+        TarkistusVirhe validointi = validoiMuokkaus();
+        if(validointi != null) {
+            naytaValidointiVirheIlmoitus(validointi);
             return;
         }
         String uusiNimi = this.kategorianNimenMuokkain.getText();
@@ -84,8 +87,18 @@ public class KategoriaController implements Initializable {
     }
 
     private void lisaaUusiKategoria() {
+        TarkistusVirhe validointi = validoiLisays();
+        if(validointi != null) {
+            naytaValidointiVirheIlmoitus(validointi);
+            return;
+        }
         String nimi = uusiKategoriaKentta.getText();
         Kategoria uusiKategoria = new Kategoria(nimi);
+        TarkistusVirhe sisainenValidointi = uusiKategoria.tarkistaVirheet();
+        if(sisainenValidointi != null) {
+            naytaValidointiVirheIlmoitus(sisainenValidointi);
+            return;
+        }
         this.kategoriat.add(uusiKategoria);
         paivitaNakyma();
     }
@@ -95,6 +108,9 @@ public class KategoriaController implements Initializable {
     }
 
     private void poistaKategoria() {
+        if(this.valittuKategoria == null) {
+            return;
+        }
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle("Varmistusdialogi");
         alert.setHeaderText("Haluatko varmasti poistaa kategorian?");
@@ -108,4 +124,41 @@ public class KategoriaController implements Initializable {
         this.kategoriat.remove(poistettavaKategoria);
     }
 
+    private TarkistusVirhe validoiLisays() {
+        if(this.uusiKategoriaKentta.getText().isBlank()) {
+            return TarkistusVirhe.NIMI_TYHJA;
+        }
+        if(this.uusiKategoriaKentta.getText().length() > 60) {
+            return TarkistusVirhe.NIMI_EPAVALIDI;
+        }
+        return null;
+    }
+
+    private TarkistusVirhe validoiMuokkaus() {
+        if(this.valittuKategoria == null) {
+            return TarkistusVirhe.KATEGORIA_TYHJA;
+        }
+        if(this.kategorianNimenMuokkain.getText().isBlank()) {
+            return TarkistusVirhe.NIMI_TYHJA;
+        }
+        if(this.kategorianNimenMuokkain.getText().length() > 60) {
+            return TarkistusVirhe.NIMI_EPAVALIDI;
+        }
+        return null;
+    }
+
+    private void naytaValidointiVirheIlmoitus(TarkistusVirhe virhe) {
+        String virheIlmoitus = "";
+        switch (virhe) {
+            case TarkistusVirhe.NIMI_TYHJA -> virheIlmoitus = "Nimikenttä ei saa olla tyhjä.";
+            case TarkistusVirhe.NIMI_EPAVALIDI ->
+                    virheIlmoitus = "Kategorialle annettu nimi on epävalidi tai liian pitkä.";
+            case TarkistusVirhe.KATEGORIA_TYHJA -> virheIlmoitus = "Valitse muokattava kategoria.";
+        }
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle("Validointivirhe");
+        alert.setHeaderText("Virhe kategorian tiedoissa!");
+        alert.setContentText(virheIlmoitus);
+        alert.show();
+    }
 }

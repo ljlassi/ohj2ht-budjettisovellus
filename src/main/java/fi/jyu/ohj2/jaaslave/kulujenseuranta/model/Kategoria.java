@@ -25,6 +25,16 @@ public class Kategoria {
         return this.nimi;
     }
 
+    public TarkistusVirhe tarkistaVirheet() {
+        if(getNimi().isBlank()) {
+            return TarkistusVirhe.NIMI_TYHJA;
+        }
+        if(getNimi().length() > 60) {
+            return TarkistusVirhe.NIMI_EPAVALIDI;
+        }
+        return null;
+    }
+
     @Override
     public String toString() {
         return this.getNimi();

@@ -1,0 +1,5 @@
+package fi.jyu.ohj2.jaaslave.kulujenseuranta.model;
+
+public enum TarkistusVirhe {
+    NIMI_TYHJA, NIMI_EPAVALIDI, SUMMA_TYHJA, SUMMA_EPAVALIDI, KATEGORIA_TYHJA, KATEGORIA_EPAVALIDI, PAIVAMAARA_TYHJA, PAIVAMAARA_EPAVALIDI
+}
