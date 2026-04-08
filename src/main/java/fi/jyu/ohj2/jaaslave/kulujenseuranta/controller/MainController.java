@@ -18,10 +18,17 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.text.Text;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import tools.jackson.core.JacksonException;
+import tools.jackson.core.type.TypeReference;
+import tools.jackson.databind.ObjectMapper;
 
 import java.io.IOException;
 import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.ResourceBundle;
 
 public class MainController implements Initializable {
@@ -65,7 +72,7 @@ public class MainController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
 
-        seuranta = new Seuranta();
+        this.seuranta = new Seuranta();
 
         alustaKayttoLiittyma();
 
@@ -81,10 +88,12 @@ public class MainController implements Initializable {
 
         this.seuranta.getTapahtumat().addListener((ListChangeListener<Tapahtuma>) change -> {
             paivitaNakyma();
+            tallennaTapahtumatTiedostoon();
         });
 
         this.seuranta.getKategoriat().addListener((ListChangeListener<Kategoria>) change -> {
             paivitaNakyma();
+            tallennaKategoriatTiedostoon();
         });
 
 
@@ -99,10 +108,20 @@ public class MainController implements Initializable {
         this.alkuPvmKentta.setValue(LocalDate.of(2026, 1, 1)); // TODO: Filtteröinnit kuntoon
         this.loppuPvmKentta.setValue(LocalDate.now());
 
-        if(this.seuranta.getTapahtumat().isEmpty()) {
-            Kategoria esimerkkiKategoria = new Kategoria("Yleinen");
+        lataaTapahtumatTiedostosta();
+        lataaKategoriatTiedostosta();
+
+        Kategoria esimerkkiKategoria2 = null; // Tässä vähän hassu ratkaisu mutta halutaan alustaa nämä if-lausekkeen
+        Kategoria esimerkkiKategoria = null;  // ulkopuolella koska samat kategoriat menee tarvittaessa esimerkkitapahtumiin.
+        if(this.seuranta.getKategoriat().isEmpty()) {
+            esimerkkiKategoria2 = new Kategoria("Asuminen");
+            esimerkkiKategoria = new Kategoria("Yleinen");
             this.seuranta.lisaaKategoria(esimerkkiKategoria);
-            Kategoria esimerkkiKategoria2 = new Kategoria("Asuminen");
+            this.seuranta.lisaaKategoria(esimerkkiKategoria2);
+        }
+
+        if(this.seuranta.getTapahtumat().isEmpty()) {
+            this.seuranta.lisaaKategoria(esimerkkiKategoria);
             this.seuranta.lisaaKategoria(esimerkkiKategoria2);
             Tapahtuma esimerkkiTapahtuma = new Tapahtuma();
             esimerkkiTapahtuma.setNimi("Esimerkkitapahtuma");
@@ -115,43 +134,38 @@ public class MainController implements Initializable {
         tapahtumaListaus.setItems(this.seuranta.getTapahtumat());
         tapahtumaListaus.setEditable(true);
 
-        seuranta.getTapahtumat().forEach( t -> {
+        TableColumn<Tapahtuma, String> nimiSarake = new TableColumn<>("Nimi");
+        nimiSarake.setCellValueFactory(cd -> cd.getValue().nimiProperty());
+        tapahtumaListaus.getColumns().add(nimiSarake);
 
-                    TableColumn<Tapahtuma, String> nimiSarake = new TableColumn<>("Nimi");
-                    nimiSarake.setCellValueFactory(cd -> cd.getValue().nimiProperty());
-                    tapahtumaListaus.getColumns().add(nimiSarake);
+        TableColumn<Tapahtuma, String> pvmSarake = new TableColumn<>("Päivämäärä");
+        pvmSarake.setCellValueFactory(cd -> cd.getValue().paivamaaraProperty().asString());
+        tapahtumaListaus.getColumns().add(pvmSarake);
 
-                    TableColumn<Tapahtuma, String> pvmSarake = new TableColumn<>("Päivämäärä");
-                    pvmSarake.setCellValueFactory(cd -> cd.getValue().paivamaaraProperty().asString());
-                    tapahtumaListaus.getColumns().add(pvmSarake);
+        TableColumn<Tapahtuma, String> summaSarake = new TableColumn<>("Summa");
+        summaSarake.setCellValueFactory(cd -> cd.getValue().summaProperty().asString());
+        tapahtumaListaus.getColumns().add(summaSarake);
 
-                    TableColumn<Tapahtuma, String> summaSarake = new TableColumn<>("Summa");
-                    summaSarake.setCellValueFactory(cd -> cd.getValue().summaProperty().asString());
-                    tapahtumaListaus.getColumns().add(summaSarake);
+        TableColumn<Tapahtuma, String> kategoriaSarake = new TableColumn<>("Kategoria");
+        kategoriaSarake.setCellValueFactory(cd -> (cd.getValue().getKategoria() != null ? cd.getValue().getKategoria().nimiProperty() : null));
+        tapahtumaListaus.getColumns().add(kategoriaSarake);
 
-                    TableColumn<Tapahtuma, String> kategoriaSarake = new TableColumn<>("Kategoria");
-                    kategoriaSarake.setCellValueFactory(cd -> (cd.getValue().getKategoria() != null ? cd.getValue().getKategoria().nimiProperty() : null));
-                    tapahtumaListaus.getColumns().add(kategoriaSarake);
+        tapahtumaListaus.setRowFactory(tv -> {
 
-                    tapahtumaListaus.setRowFactory(tv -> {
+            TableRow<Tapahtuma> row = new TableRow<>();
 
-                        TableRow<Tapahtuma> row = new TableRow<>();
+            row.setOnMouseClicked(event -> {
 
-                        row.setOnMouseClicked(event -> {
+                if (event.getButton().equals(MouseButton.PRIMARY) &&
+                        event.getClickCount() == 2 && !row.isEmpty()) {
 
-                            if (event.getButton().equals(MouseButton.PRIMARY) &&
-                                    event.getClickCount() == 2 && !row.isEmpty()) {
-
-                                Tapahtuma tapahtuma = row.getItem();
-                                avaaTapahtumaNakyma(tapahtuma);
-                            }
-                        });
-
-                        return row;
-                    });
+                    Tapahtuma tapahtuma = row.getItem();
+                    avaaTapahtumaNakyma(tapahtuma);
                 }
+            });
 
-        );
+            return row;
+        });
 
         this.paivitaNakyma();
     }
@@ -253,5 +267,49 @@ public class MainController implements Initializable {
 
         tapahtumaListaus.refresh();
 
+    }
+
+    private void lataaTapahtumatTiedostosta() {
+        Path path = Path.of("tapahtumat.json");
+        if (Files.notExists(path)) {
+            return;
+        }
+        try {
+            ObjectMapper mapper = new ObjectMapper();
+            List<Tapahtuma> kaikkiTapahtumat = mapper.readValue(path.toFile(), new TypeReference<>() {});
+            kaikkiTapahtumat.forEach(tapahtuma-> {
+                this.seuranta.lisaaTapahtuma(tapahtuma);
+            });
+        } catch (JacksonException je) {
+            IO.println("JSONin lukeminen epäonnistui: " + je.getMessage());
+        }
+    }
+
+    private void lataaKategoriatTiedostosta() {
+        Path path = Path.of("kategoriat.json");
+        if (Files.notExists(path)) {
+            return;
+        }
+        try {
+            ObjectMapper mapper = new ObjectMapper();
+            List<Kategoria> kaikkiKategoriat = mapper.readValue(path.toFile(), new TypeReference<>() {});
+            kaikkiKategoriat.forEach(kategoria-> {
+                this.seuranta.lisaaKategoria(kategoria);
+            });
+        } catch (JacksonException je) {
+            IO.println("JSONin lukeminen epäonnistui: " + je.getMessage());
+        }
+    }
+
+    private void tallennaKategoriatTiedostoon() {
+        List<Kategoria> kategoriat = new ArrayList<>(this.seuranta.getKategoriat());
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.writeValue(Path.of("kategoriat.json"), kategoriat);
+    }
+
+    private void tallennaTapahtumatTiedostoon() {
+        List<Tapahtuma> tapahtumat = new ArrayList<>(this.seuranta.getTapahtumat());
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.writeValue(Path.of("tapahtumat.json"), tapahtumat);
     }
 }
