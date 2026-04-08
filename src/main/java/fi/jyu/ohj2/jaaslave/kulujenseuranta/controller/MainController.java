@@ -94,6 +94,8 @@ public class MainController implements Initializable {
         this.seuranta.getKategoriat().addListener((ListChangeListener<Kategoria>) change -> {
             paivitaNakyma();
             tallennaKategoriatTiedostoon();
+            paivitaNakyma();
+            tallennaTapahtumatTiedostoon(); // Tallennetaan myös tapahtumat tässä kohtaa siltä varalta että niiden kategorioita on muokattu.
         });
 
 

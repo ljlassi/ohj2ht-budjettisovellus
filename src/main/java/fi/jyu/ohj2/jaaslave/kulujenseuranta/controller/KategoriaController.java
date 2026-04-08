@@ -37,14 +37,19 @@ public class KategoriaController implements Initializable {
 
     private ObservableList<Kategoria> kategoriat;
 
+    private Kategoria valittuKategoria;
+
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
 
         lisaaUusiKategoriaPainike.setOnAction(event -> { lisaaUusiKategoria(); });
         poistaKategoriaPainike.setOnAction(event -> { poistaKategoria(); });
-        tallennaMuutoksetKategoriaanPainike.setOnAction(event -> { IO.println("Tallennetaan muutokset kategoriaan..."); });
+        tallennaMuutoksetKategoriaanPainike.setOnAction(event -> { this.tallennaMuutoksetKategoriaan(); });
         poistuKategoriaNakymastaPainike.setOnAction(event -> { sulje(); });
+        muokattavanKategorianValitsin.setOnAction(event -> {
+            naytaValitunKategorianTiedot();
+        });
 
         paivitaNakyma();
 
@@ -58,6 +63,24 @@ public class KategoriaController implements Initializable {
 
     public void setKategoriat(ObservableList<Kategoria> kategoriat) {
         this.kategoriat = kategoriat;
+        muokattavanKategorianValitsin.setItems(this.kategoriat);
+    }
+
+    private void naytaValitunKategorianTiedot() {
+        this.valittuKategoria = muokattavanKategorianValitsin.getValue();
+        this.kategorianNimenMuokkain.setText(this.valittuKategoria.getNimi());
+    }
+
+    private void tallennaMuutoksetKategoriaan() {
+        if(this.valittuKategoria == null) {
+            return;
+        }
+        String uusiNimi = this.kategorianNimenMuokkain.getText();
+        this.kategoriat.forEach(k -> {
+            if(k == this.valittuKategoria) {
+                k.setNimi(uusiNimi);
+            }
+        });
     }
 
     private void lisaaUusiKategoria() {
@@ -68,9 +91,7 @@ public class KategoriaController implements Initializable {
     }
 
     private void paivitaNakyma() {
-        if(this.kategoriat != null) {
-            muokattavanKategorianValitsin.setItems(this.kategoriat);
-        }
+        muokattavanKategorianValitsin.setItems(this.kategoriat);
     }
 
     private void poistaKategoria() {
