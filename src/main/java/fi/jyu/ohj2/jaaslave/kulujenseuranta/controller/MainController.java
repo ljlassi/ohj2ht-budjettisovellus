@@ -64,6 +64,8 @@ public class MainController implements Initializable {
 
     FilteredList<Tapahtuma> tapahtumatFiltteroityna;
 
+    private boolean naytetaankoVainPakollisetTapahtumat;
+
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
 
@@ -77,6 +79,10 @@ public class MainController implements Initializable {
         lisaaTuloPainike.setOnAction(_ -> avaaTapahtumaNakyma());
         lisaaMenoPainike.setOnAction(_ -> avaaTapahtumaNakyma());
         muokkaaKategorioitaLinkki.setOnAction(_ -> avaaKategoriaNakyma());
+        vainPakollisetNappain.setOnAction(_ -> {
+            naytetaankoVainPakollisetTapahtumat = !naytetaankoVainPakollisetTapahtumat;
+            paivitaNakyma();
+        });
 
         this.seuranta.getTapahtumat().addListener((ListChangeListener<Tapahtuma>) _ -> paivitaNakyma());
 
@@ -263,7 +269,7 @@ public class MainController implements Initializable {
             this.menotYhteensaTeksti.setText(Double.toString(menot));
         }
 
-        if(vainPakollisetNappain.selectedProperty().getValue()) {
+        if(naytetaankoVainPakollisetTapahtumat) {
             this.tapahtumatFiltteroityna = new FilteredList<>(this.seuranta.getTapahtumat(), t -> t.getKategoria().getPakollinen());
             tapahtumaListaus.setItems(this.tapahtumatFiltteroityna); // TODO: KORJAA FILTTERÖINTI
         } else {
