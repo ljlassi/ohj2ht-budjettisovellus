@@ -5,9 +5,7 @@ import fi.jyu.ohj2.jaaslave.kulujenseuranta.model.Kategoria;
 import fi.jyu.ohj2.jaaslave.kulujenseuranta.model.Seuranta;
 import fi.jyu.ohj2.jaaslave.kulujenseuranta.model.Tapahtuma;
 import fi.jyu.ohj2.jaaslave.kulujenseuranta.persistence.JsonSeurantaRepository;
-import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
-import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -36,16 +34,13 @@ public class MainController implements Initializable {
     private DatePicker loppuPvmKentta;
 
     @FXML
-    private ComboBox<String> kategoriaValitsin;
+    private ComboBox<Kategoria> kategoriaValitsin;
 
     @FXML
     private Hyperlink muokkaaKategorioitaLinkki;
 
     @FXML
-    private Button lisaaTuloPainike;
-
-    @FXML
-    private Button lisaaMenoPainike;
+    private Button lisaaTapahtumaPainike;
 
     @FXML
     private TableView<Tapahtuma> tapahtumaListaus;
@@ -62,9 +57,14 @@ public class MainController implements Initializable {
     @FXML
     private ToggleButton vainPakollisetNappain;
 
+    @FXML
+    private ToggleButton suodataPainike;
+
     FilteredList<Tapahtuma> tapahtumatFiltteroityna;
 
     private boolean naytetaankoVainPakollisetTapahtumat;
+
+    private boolean suodatetaankoTapahtumia = false;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -74,13 +74,16 @@ public class MainController implements Initializable {
 
         alustaKayttoLiittyma();
 
-        alkuPvmKentta.setOnAction(_ -> IO.println("Alkupäivämääräkenttän arvoa muokattu..."));
-        loppuPvmKentta.setOnAction(_ -> IO.println("Loppupäivämääräkentän arvoa muokattu..."));
-        lisaaTuloPainike.setOnAction(_ -> avaaTapahtumaNakyma());
-        lisaaMenoPainike.setOnAction(_ -> avaaTapahtumaNakyma());
+        alkuPvmKentta.setOnAction(_ -> paivitaNakyma());
+        loppuPvmKentta.setOnAction(_ -> paivitaNakyma());
+        lisaaTapahtumaPainike.setOnAction(_ -> avaaTapahtumaNakyma());
         muokkaaKategorioitaLinkki.setOnAction(_ -> avaaKategoriaNakyma());
         vainPakollisetNappain.setOnAction(_ -> {
             naytetaankoVainPakollisetTapahtumat = !naytetaankoVainPakollisetTapahtumat;
+            paivitaNakyma();
+        });
+        suodataPainike.setOnAction(_ -> {
+            suodatetaankoTapahtumia = !suodatetaankoTapahtumia;
             paivitaNakyma();
         });
 
@@ -258,8 +261,7 @@ public class MainController implements Initializable {
     public void paivitaNakyma() {
 
         if(this.seuranta.getKategoriat() != null) {
-            ObservableList<String> lista = FXCollections.observableList(this.seuranta.haeKategorioidenNimet());
-            kategoriaValitsin.setItems(lista);
+            kategoriaValitsin.setItems(this.seuranta.getKategoriat());
         }
 
         if(this.seuranta.getTapahtumat() != null) {
@@ -269,9 +271,18 @@ public class MainController implements Initializable {
             this.menotYhteensaTeksti.setText(Double.toString(menot));
         }
 
-        if(naytetaankoVainPakollisetTapahtumat) {
+        if(this.suodatetaankoTapahtumia) {
+            // Suodatetaan tapahtumat valittuna olevan kategorian sekä valittujen päivämäärien mukaan.
+            this.tapahtumatFiltteroityna = new FilteredList<>(this.seuranta.getTapahtumat(), t ->
+                    (this.kategoriaValitsin.getValue() == null || t.getKategoria().getNimi().equals(this.kategoriaValitsin.getValue().getNimi())) &&
+                            (t.getPaivamaara().isAfter(this.alkuPvmKentta.getValue()) || t.getPaivamaara().equals(this.alkuPvmKentta.getValue())) &&
+                            (t.getPaivamaara().isBefore(this.loppuPvmKentta.getValue()) || t.getPaivamaara().equals(this.loppuPvmKentta.getValue()))
+
+                    );
+            this.tapahtumaListaus.setItems(this.tapahtumatFiltteroityna);
+        } else if(naytetaankoVainPakollisetTapahtumat) {
             this.tapahtumatFiltteroityna = new FilteredList<>(this.seuranta.getTapahtumat(), t -> t.getKategoria().getPakollinen());
-            tapahtumaListaus.setItems(this.tapahtumatFiltteroityna); // TODO: KORJAA FILTTERÖINTI
+            tapahtumaListaus.setItems(this.tapahtumatFiltteroityna);
         } else {
             this.tapahtumaListaus.setItems(this.seuranta.getTapahtumat());
         }

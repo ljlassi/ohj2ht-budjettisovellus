@@ -34,7 +34,7 @@
                   <Insets left="10.0" />
                </HBox.margin>
             </HBox>
-            <HBox prefHeight="75.0" prefWidth="200.0">
+            <HBox prefHeight="75.0" prefWidth="165.0">
                <children>
                   <ComboBox fx:id="kategoriaValitsin" prefWidth="150.0" promptText="Kaikki kategoriat">
                      <HBox.margin>
@@ -43,20 +43,24 @@
                   </ComboBox>
                </children>
             </HBox>
+            <HBox prefHeight="100.0" prefWidth="90.0">
+               <children>
+                  <ToggleButton fx:id="suodataPainike" mnemonicParsing="false" text="Suodata" />
+               </children>
+            </HBox>
+            <HBox prefHeight="75.0" prefWidth="120.0">
+               <children>
+                  <ToggleButton fx:id="vainPakollisetNappain" mnemonicParsing="false" text="Vain pakolliset" />
+               </children>
+            </HBox>
             <HBox prefHeight="75.0" prefWidth="175.0">
                <children>
                   <Hyperlink fx:id="muokkaaKategorioitaLinkki" text="Muokkaa kategorioita" />
                </children>
             </HBox>
-            <HBox prefHeight="75.0" prefWidth="125.0">
+            <HBox prefHeight="75.0" prefWidth="140.0" spacing="7.0">
                <children>
-                  <ToggleButton fx:id="vainPakollisetNappain" mnemonicParsing="false" text="Vain pakolliset" />
-               </children>
-            </HBox>
-            <HBox prefHeight="75.0" prefWidth="200.0" spacing="7.0">
-               <children>
-                  <Button fx:id="lisaaTuloPainike" minWidth="85.0" mnemonicParsing="false" style="-fx-background-color: lightgreen;" text="+ Lisää tulo" />
-                  <Button fx:id="lisaaMenoPainike" mnemonicParsing="false" text="+ Lisää meno" />
+                  <Button fx:id="lisaaTapahtumaPainike" minWidth="85.0" mnemonicParsing="false" style="-fx-background-color: lightgreen;" text="+ Lisää tapahtuma" />
                </children>
             </HBox>
          </children>
