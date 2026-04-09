@@ -187,6 +187,7 @@ public class MainController implements Initializable {
             TapahtumaController controller = loader.getController();
             controller.setTapahtuma(tapahtuma);
             controller.setKategoriat(this.seuranta.getKategoriat());
+            controller.setTapahtumat(this.seuranta.getTapahtumat());
 
             Stage dialogi = new Stage();
             dialogi.setScene(scene);
@@ -205,17 +206,14 @@ public class MainController implements Initializable {
     }
 
     private void avaaTapahtumaNakyma() {
-
-        Tapahtuma tapahtuma = new Tapahtuma();
-        this.seuranta.lisaaTapahtuma(tapahtuma);
         try {
             FXMLLoader loader = new FXMLLoader(App.class.getResource("tapahtuma-nakyma.fxml"));
             Parent root = loader.load();
             Scene scene = new Scene(root);
 
             TapahtumaController controller = loader.getController();
-            controller.setTapahtuma(tapahtuma);
             controller.setKategoriat(this.seuranta.getKategoriat());
+            controller.setTapahtumat(this.seuranta.getTapahtumat());
 
             Stage dialogi = new Stage();
             dialogi.setScene(scene);

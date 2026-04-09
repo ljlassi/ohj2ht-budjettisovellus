@@ -43,7 +43,7 @@
             <HBox prefHeight="70.0" prefWidth="200.0">
                <children>
                   <Label minWidth="70.0" text="Kategoria" />
-                  <ComboBox fx:id="tapahtumanKategoriaValitsin" prefWidth="150.0" />
+                  <ComboBox fx:id="tapahtumanKategoriaValitsin" prefWidth="150.0" promptText="Valitse" />
                </children>
             </HBox>
             <HBox prefHeight="100.0" prefWidth="200.0">

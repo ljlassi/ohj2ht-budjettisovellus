@@ -12,7 +12,6 @@ import javafx.stage.Stage;
 
 import java.net.URL;
 import java.time.LocalDate;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
@@ -41,6 +40,8 @@ public class TapahtumaController implements Initializable {
 
     private Tapahtuma tapahtuma;
 
+    private ObservableList<Tapahtuma> tapahtumat;
+
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
 
@@ -63,17 +64,23 @@ public class TapahtumaController implements Initializable {
         }
     }
 
+    public void setTapahtumat(ObservableList<Tapahtuma> tapahtumat) {
+        this.tapahtumat = tapahtumat;
+    }
+
     public void setKategoriat(ObservableList<Kategoria> kategoriat) {
         tapahtumanKategoriaValitsin.setItems(kategoriat);
     }
 
     private void lisaaTapahtuma() {
+        boolean uusiTapahtuma = false;
         TarkistusVirhe kenttienValidointiVirhe = validoiKentat();
         if(kenttienValidointiVirhe != null) {
             naytaValidointiVirheIlmoitus(kenttienValidointiVirhe);
             return;
         }
         if(this.tapahtuma == null) {
+            uusiTapahtuma = true;
             this.tapahtuma = new Tapahtuma();
         }
         this.tapahtuma.setNimi(tapahtumanAiheKentta.getText());
@@ -85,7 +92,9 @@ public class TapahtumaController implements Initializable {
             naytaValidointiVirheIlmoitus(tapahtuma.tarkistaVirheet());
             return;
         }
-
+        if(uusiTapahtuma) {
+            this.tapahtumat.add(this.tapahtuma);
+        }
         sulje();
     }
 
@@ -105,7 +114,7 @@ public class TapahtumaController implements Initializable {
         if (result.isPresent() && result.get() != ButtonType.OK){
             return;
         }
-        this.tapahtuma.setNimi("");
+        this.tapahtumat.remove(this.tapahtuma);
         this.tapahtuma = null;
         this.sulje();
     }
@@ -118,6 +127,7 @@ public class TapahtumaController implements Initializable {
             case TarkistusVirhe.SUMMA_TYHJA -> virheIlmoitus = "Summaa ei ole annettu.";
             case TarkistusVirhe.SUMMA_EPAVALIDI -> virheIlmoitus = "Annettu summa on epävalidi, tarkista että annoit numeerisen arvon";
             case TarkistusVirhe.PAIVAMAARA_TYHJA -> virheIlmoitus = "Päivämäärää ei ole asetettu, päivämäärä vaaditaan.";
+            case TarkistusVirhe.PAIVAMAARA_EPAVALIDI -> virheIlmoitus = "Päivämäärässä on vikaa, tarkista ettei se ole tulevaisuudessa!";
             case TarkistusVirhe.KATEGORIA_TYHJA -> virheIlmoitus = "Kategoriaa ei ole valittu, tapahtumalla täytyy olla kategoria.";
         }
 

@@ -57,18 +57,7 @@ public class Seuranta {
             }
         } );
 
-        this.tapahtumat.addListener((ListChangeListener<Tapahtuma>) change -> {
-            while(change.next()) {
-                if (change.wasUpdated()) {
-                    for (int i = change.getFrom(); i < change.getTo(); ++i) {
-                        if(tapahtumat.get(i).getNimi().isBlank()) { // Tämä on vähän hassusti tehty ja ehkä paranellaan myöhemmin, toimii sinällään.
-                            tapahtumat.remove(tapahtumat.get(i));   // Ongelmana siis ylläolevaan liittyen että poisto ei tahdo välittyä aina, mutta nimen tyhjennys kyllä välittyy.
-                        }
-                    }
-                }
-            }
-            this.tallennaTapahtumat();
-        });
+        this.tapahtumat.addListener((ListChangeListener<Tapahtuma>) _ -> this.tallennaTapahtumat() );
 
     }
 
@@ -92,14 +81,6 @@ public class Seuranta {
             return;
         }
         this.kategoriat.add(kategoria);
-    }
-
-    public List<String> haeKategorioidenNimet() {
-        List<String> nimet = new ArrayList<>();
-        for (Kategoria k : kategoriat) {
-            nimet.add(k.getNimi());
-        }
-        return nimet;
     }
 
     public void lataaTapahtumat() {
