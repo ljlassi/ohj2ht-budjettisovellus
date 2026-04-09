@@ -8,6 +8,7 @@ import fi.jyu.ohj2.jaaslave.kulujenseuranta.persistence.JsonSeurantaRepository;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
+import javafx.collections.transformation.FilteredList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -58,6 +59,11 @@ public class MainController implements Initializable {
     @FXML
     private Seuranta seuranta;
 
+    @FXML
+    private ToggleButton vainPakollisetNappain;
+
+    FilteredList<Tapahtuma> tapahtumatFiltteroityna;
+
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
 
@@ -66,23 +72,15 @@ public class MainController implements Initializable {
 
         alustaKayttoLiittyma();
 
-        alkuPvmKentta.setOnAction(event -> { IO.println("Alkupäivämääräkenttän arvoa muokattu..."); });
-        loppuPvmKentta.setOnAction(event -> { IO.println("Loppupäivämääräkentän arvoa muokattu..."); });
-        lisaaTuloPainike.setOnAction(event -> {
-            avaaTapahtumaNakyma();
-        });
-        lisaaMenoPainike.setOnAction(event -> { avaaTapahtumaNakyma(); });
-        muokkaaKategorioitaLinkki.setOnAction(event -> {
-            avaaKategoriaNakyma();
-        });
+        alkuPvmKentta.setOnAction(_ -> IO.println("Alkupäivämääräkenttän arvoa muokattu..."));
+        loppuPvmKentta.setOnAction(_ -> IO.println("Loppupäivämääräkentän arvoa muokattu..."));
+        lisaaTuloPainike.setOnAction(_ -> avaaTapahtumaNakyma());
+        lisaaMenoPainike.setOnAction(_ -> avaaTapahtumaNakyma());
+        muokkaaKategorioitaLinkki.setOnAction(_ -> avaaKategoriaNakyma());
 
-        this.seuranta.getTapahtumat().addListener((ListChangeListener<Tapahtuma>) change -> {
-            paivitaNakyma();
-        });
+        this.seuranta.getTapahtumat().addListener((ListChangeListener<Tapahtuma>) _ -> paivitaNakyma());
 
-        this.seuranta.getKategoriat().addListener((ListChangeListener<Kategoria>) change -> {
-            paivitaNakyma();
-        });
+        this.seuranta.getKategoriat().addListener((ListChangeListener<Kategoria>) _ -> paivitaNakyma());
 
 
     }
@@ -99,10 +97,10 @@ public class MainController implements Initializable {
         this.seuranta.lataaKategoriat();
         this.seuranta.lataaTapahtumat();
 
-        Kategoria esimerkkiKategoria2 = null; // Tässä vähän hassu ratkaisu mutta halutaan alustaa nämä if-lausekkeen
-        Kategoria esimerkkiKategoria = null;  // ulkopuolella koska samat kategoriat menee tarvittaessa esimerkkitapahtumiin.
+        Kategoria esimerkkiKategoria;
+
         if(this.seuranta.getKategoriat().isEmpty()) {
-            esimerkkiKategoria2 = new Kategoria("Asuminen", true);
+            Kategoria esimerkkiKategoria2 = new Kategoria("Asuminen", true);
             esimerkkiKategoria = new Kategoria("Yleinen", false);
             this.seuranta.lisaaKategoria(esimerkkiKategoria);
             this.seuranta.lisaaKategoria(esimerkkiKategoria2);
@@ -110,7 +108,7 @@ public class MainController implements Initializable {
 
         if(this.seuranta.getTapahtumat().isEmpty()) {
             if(this.seuranta.getKategoriat().isEmpty()) { // Mikäli tapahtumat ja kategoriat on molemmat tyhjiä
-                esimerkkiKategoria2 = new Kategoria("Asuminen", true);
+                Kategoria esimerkkiKategoria2 = new Kategoria("Asuminen", true);
                 esimerkkiKategoria = new Kategoria("Yleinen", false);
                 this.seuranta.lisaaKategoria(esimerkkiKategoria);
                 this.seuranta.lisaaKategoria(esimerkkiKategoria2);
@@ -150,7 +148,7 @@ public class MainController implements Initializable {
         pakollinenMenoSarake.setEditable(false);
         tapahtumaListaus.getColumns().add(pakollinenMenoSarake);
 
-        tapahtumaListaus.setRowFactory(tv -> {
+        tapahtumaListaus.setRowFactory(_ -> {
 
             TableRow<Tapahtuma> row = new TableRow<>();
 
@@ -263,6 +261,13 @@ public class MainController implements Initializable {
             double menot = this.seuranta.getTapahtumat().stream().filter(t -> t.getSumma() < 0).mapToDouble(Tapahtuma::getSumma).sum();
             this.tulotYhteensaTeksti.setText(Double.toString(tulot));
             this.menotYhteensaTeksti.setText(Double.toString(menot));
+        }
+
+        if(vainPakollisetNappain.selectedProperty().getValue()) {
+            this.tapahtumatFiltteroityna = new FilteredList<>(this.seuranta.getTapahtumat(), t -> t.getKategoria().getPakollinen());
+            tapahtumaListaus.setItems(this.tapahtumatFiltteroityna); // TODO: KORJAA FILTTERÖINTI
+        } else {
+            this.tapahtumaListaus.setItems(this.seuranta.getTapahtumat());
         }
 
         tapahtumaListaus.refresh();

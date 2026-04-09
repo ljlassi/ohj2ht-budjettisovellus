@@ -47,13 +47,11 @@ public class KategoriaController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
 
-        lisaaUusiKategoriaPainike.setOnAction(event -> { lisaaUusiKategoria(); });
-        poistaKategoriaPainike.setOnAction(event -> { poistaKategoria(); });
-        tallennaMuutoksetKategoriaanPainike.setOnAction(event -> { this.tallennaMuutoksetKategoriaan(); });
-        poistuKategoriaNakymastaPainike.setOnAction(event -> { sulje(); });
-        muokattavanKategorianValitsin.setOnAction(event -> {
-            naytaValitunKategorianTiedot();
-        });
+        lisaaUusiKategoriaPainike.setOnAction(_ -> lisaaUusiKategoria());
+        poistaKategoriaPainike.setOnAction(_ -> poistaKategoria());
+        tallennaMuutoksetKategoriaanPainike.setOnAction(_ -> this.tallennaMuutoksetKategoriaan());
+        poistuKategoriaNakymastaPainike.setOnAction(_ -> sulje());
+        muokattavanKategorianValitsin.setOnAction(_ -> naytaValitunKategorianTiedot());
 
         paivitaNakyma();
 
@@ -123,7 +121,7 @@ public class KategoriaController implements Initializable {
         alert.setContentText("Kateogoria " + muokattavanKategorianValitsin.getValue().getNimi() + " poistetaan.");
 
         Optional<ButtonType> result = alert.showAndWait();
-        if (result.get() != ButtonType.OK){
+        if (result.isPresent() && result.get() != ButtonType.OK){
             return;
         }
         Kategoria poistettavaKategoria = muokattavanKategorianValitsin.getValue();

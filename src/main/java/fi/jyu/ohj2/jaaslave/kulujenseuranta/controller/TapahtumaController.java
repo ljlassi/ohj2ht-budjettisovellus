@@ -12,6 +12,7 @@ import javafx.stage.Stage;
 
 import java.net.URL;
 import java.time.LocalDate;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
@@ -40,14 +41,12 @@ public class TapahtumaController implements Initializable {
 
     private Tapahtuma tapahtuma;
 
-    private ObservableList<Kategoria> kategoriat;
-
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
 
-        poistaTapahtumaPainike.setOnAction(event -> { poistaTapahtuma(); });
-        lisaaTapahtumaPainike.setOnAction(event -> { lisaaTapahtuma(); });
-        peruutaLisaysPainike.setOnAction(event -> { sulje(); });
+        poistaTapahtumaPainike.setOnAction(_ -> poistaTapahtuma());
+        lisaaTapahtumaPainike.setOnAction(_ -> lisaaTapahtuma());
+        peruutaLisaysPainike.setOnAction(_ -> sulje());
 
     }
 
@@ -65,8 +64,7 @@ public class TapahtumaController implements Initializable {
     }
 
     public void setKategoriat(ObservableList<Kategoria> kategoriat) {
-        this.kategoriat = kategoriat;
-        tapahtumanKategoriaValitsin.setItems(this.kategoriat);
+        tapahtumanKategoriaValitsin.setItems(kategoriat);
     }
 
     private void lisaaTapahtuma() {
@@ -104,7 +102,7 @@ public class TapahtumaController implements Initializable {
         alert.setContentText("Tapahtuma " + tapahtuma.getNimi() + " poistetaan.");
 
         Optional<ButtonType> result = alert.showAndWait();
-        if (result.get() != ButtonType.OK){
+        if (result.isPresent() && result.get() != ButtonType.OK){
             return;
         }
         this.tapahtuma.setNimi("");
@@ -135,7 +133,6 @@ public class TapahtumaController implements Initializable {
      * Validoi UI:n kenttien arvot, käytetään ennen kuin laitetaan mitään dataa
      * sieltä tietomallin sisään.
      *
-     * @return
      */
     private TarkistusVirhe validoiKentat() {
         if(tapahtumanAiheKentta.getText().isBlank()) {
@@ -162,9 +159,7 @@ public class TapahtumaController implements Initializable {
     /**
      * Katsotaan että saadanko merkkijonosta parsittua validi double.
      * Ei kovin suorituskykyinen ratkaisu validointimielessä mutta tässä
-     * kontekstissa käynee.
-     * @param str
-     * @return
+     * kontekstissa käynee
      */
     public boolean onNumeerinen(String str) {
         try {

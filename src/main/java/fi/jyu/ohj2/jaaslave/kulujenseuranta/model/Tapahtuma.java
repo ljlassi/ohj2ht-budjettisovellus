@@ -8,9 +8,9 @@ public class Tapahtuma {
 
     private final StringProperty nimi = new SimpleStringProperty("");
     private final DoubleProperty summa = new SimpleDoubleProperty(0.0);
-    private final ObjectProperty<LocalDate> paivamaara = new SimpleObjectProperty<LocalDate>(LocalDate.now());
+    private final ObjectProperty<LocalDate> paivamaara = new SimpleObjectProperty<>(LocalDate.now());
 
-    private final ObjectProperty<Kategoria> kategoria = new SimpleObjectProperty<Kategoria>(new Kategoria("Yleinen", false));
+    private final ObjectProperty<Kategoria> kategoria = new SimpleObjectProperty<>(new Kategoria("Yleinen", false));
 
     public Tapahtuma() {
     }

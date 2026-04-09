@@ -50,7 +50,7 @@
             </HBox>
             <HBox prefHeight="75.0" prefWidth="125.0">
                <children>
-                  <ToggleButton mnemonicParsing="false" text="Vain pakolliset" />
+                  <ToggleButton fx:id="vainPakollisetNappain" mnemonicParsing="false" text="Vain pakolliset" />
                </children>
             </HBox>
             <HBox prefHeight="75.0" prefWidth="200.0" spacing="7.0">
