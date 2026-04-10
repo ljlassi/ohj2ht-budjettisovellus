@@ -48,7 +48,7 @@
       <HBox prefHeight="100.0" prefWidth="200.0" spacing="15.0">
          <children>
             <Button fx:id="poistaKategoriaPainike" minWidth="100.0" mnemonicParsing="false" style="-fx-background-color: red;" text="Poista kategoria" textFill="WHITE" />
-            <Button fx:id="tallennaMuutoksetKategoriaanPainike" mnemonicParsing="false" style="-fx-background-color: green;" text="Muokkaa kategoriaa" textFill="WHITE" />
+            <Button fx:id="tallennaMuutoksetKategoriaanPainike" mnemonicParsing="false" style="-fx-background-color: green;" text="Tallenna muutokset" textFill="WHITE" />
             <Button fx:id="poistuKategoriaNakymastaPainike" mnemonicParsing="false" text="Poistu" />
          </children>
       </HBox>
