@@ -53,6 +53,7 @@ public class TapahtumaController implements Initializable {
 
     public void setTapahtuma(Tapahtuma tapahtuma) {
         this.tapahtuma = tapahtuma;
+        tapahtumanKategoriaValitsin.setValue(tapahtuma.getKategoria());
         if (!tapahtuma.getNimi().isBlank()) {
             tapahtumanAiheKentta.setText(tapahtuma.getNimi());
         }
