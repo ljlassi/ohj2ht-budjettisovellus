@@ -256,17 +256,10 @@ public class MainController implements Initializable {
         }
     }
 
-    public void paivitaNakyma() {
+    private void paivitaNakyma() {
 
         if(this.seuranta.getKategoriat() != null) {
             kategoriaValitsin.setItems(this.seuranta.getKategoriat());
-        }
-
-        if(this.seuranta.getTapahtumat() != null) {
-            double tulot = this.seuranta.getTapahtumat().stream().filter(t -> t.getSumma() > 0).mapToDouble(Tapahtuma::getSumma).sum();
-            double menot = this.seuranta.getTapahtumat().stream().filter(t -> t.getSumma() < 0).mapToDouble(Tapahtuma::getSumma).sum();
-            this.tulotYhteensaTeksti.setText(Double.toString(tulot));
-            this.menotYhteensaTeksti.setText(Double.toString(menot));
         }
 
         if(this.suodatetaankoTapahtumia) {
@@ -284,8 +277,25 @@ public class MainController implements Initializable {
         } else {
             this.tapahtumaListaus.setItems(this.seuranta.getTapahtumat());
         }
-
+        paivitaTapahtumatYhteensa();
         tapahtumaListaus.refresh();
 
+    }
+
+    private void paivitaTapahtumatYhteensa() {
+        if(this.seuranta.getTapahtumat() != null) {
+            double tulot = 0.0;
+            double menot = 0.0;
+            if(!this.suodatetaankoTapahtumia && !this.naytetaankoVainPakollisetTapahtumat) {
+                tulot = this.seuranta.getTapahtumat().stream().filter(t -> t.getSumma() > 0).mapToDouble(Tapahtuma::getSumma).sum();
+                menot = this.seuranta.getTapahtumat().stream().filter(t -> t.getSumma() < 0).mapToDouble(Tapahtuma::getSumma).sum();
+            } else {
+                tulot = this.tapahtumatFiltteroityna.stream().filter(t -> t.getSumma() > 0).mapToDouble(Tapahtuma::getSumma).sum();
+                menot = this.tapahtumatFiltteroityna.stream().filter(t -> t.getSumma() < 0).mapToDouble(Tapahtuma::getSumma).sum();
+            }
+            this.tulotYhteensaTeksti.setText(Double.toString(tulot));
+            this.menotYhteensaTeksti.setText(Double.toString(menot));
+
+        }
     }
 }
