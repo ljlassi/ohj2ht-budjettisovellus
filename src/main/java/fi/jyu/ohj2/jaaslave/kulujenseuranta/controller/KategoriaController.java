@@ -96,6 +96,7 @@ public class KategoriaController implements Initializable {
                 k.setPakollinen(onkoPakollinen);
             }
         });
+        sulje();
     }
 
     private void lisaaUusiKategoria() {

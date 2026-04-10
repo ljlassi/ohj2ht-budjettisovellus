@@ -251,6 +251,7 @@ public class MainController implements Initializable {
         if (suodatetaankoTapahtumia) {
             // Suodatetaan tapahtumat valittuna olevan kategorian sekä valittujen päivämäärien mukaan.
             tapahtumatFiltteroityna = new FilteredList<>(seuranta.getTapahtumat(), t ->
+                    t.getKategoria() != null &&
                     (kategoriaValitsin.getValue() == null || t.getKategoria().getNimi().equals(kategoriaValitsin.getValue().getNimi())) &&
                             (t.getPaivamaara().isAfter(alkuPvmKentta.getValue()) || t.getPaivamaara().equals(alkuPvmKentta.getValue())) &&
                             (t.getPaivamaara().isBefore(loppuPvmKentta.getValue()) || t.getPaivamaara().equals(loppuPvmKentta.getValue()))
@@ -258,7 +259,7 @@ public class MainController implements Initializable {
             );
             tapahtumaListaus.setItems(tapahtumatFiltteroityna);
         } else if (naytetaankoVainPakollisetTapahtumat) {
-            tapahtumatFiltteroityna = new FilteredList<>(seuranta.getTapahtumat(), t -> t.getKategoria().getPakollinen());
+            tapahtumatFiltteroityna = new FilteredList<>(seuranta.getTapahtumat(), t -> (t.getKategoria() != null && t.getKategoria().getPakollinen()));
             tapahtumaListaus.setItems(tapahtumatFiltteroityna);
         } else {
             tapahtumaListaus.setItems(seuranta.getTapahtumat());

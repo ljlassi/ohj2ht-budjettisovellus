@@ -40,13 +40,20 @@ public class Seuranta {
                             t.setKategoria(null);
                         }
                     });
-                } else if (change.wasUpdated()) {
+                }
+                if (change.wasUpdated() || change.wasReplaced()) {
                     for (int i = change.getFrom(); i < change.getTo(); i++) {
                         Kategoria k = change.getList().get(i);
                         tapahtumat.forEach(t -> {
-                            if (t.getKategoria() == k)
+                            if(t.getKategoria() == null) {
+                                t.setKategoria(null);
+                            } else if (t.getKategoria().equals(k))
                                 t.setKategoria(k);
+                            else if (t.getKategoria().nimetSamoja(k)) {
+                                t.setKategoria(k);
+                            }
                         });
+                            
                     }
                 }
             }

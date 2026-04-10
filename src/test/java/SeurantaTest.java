@@ -30,7 +30,6 @@ public class SeurantaTest {
         MockSeurantaRepository mock = new MockSeurantaRepository();
         Seuranta seuranta = new Seuranta(mock);
 
-        boolean pakollinen = false;
         String testiNimi = "     ";
         Kategoria kategoria = new Kategoria(testiNimi, false);
 

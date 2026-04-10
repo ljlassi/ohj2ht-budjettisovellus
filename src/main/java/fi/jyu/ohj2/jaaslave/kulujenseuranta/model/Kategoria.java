@@ -10,12 +10,21 @@ public class Kategoria {
     private final StringProperty nimi = new SimpleStringProperty("");
     private final BooleanProperty pakollinen = new SimpleBooleanProperty(false);
 
+    private final int idArvo;
+    private static int idArvoja;
+
     public Kategoria() {
+        idArvo = ++idArvoja;
     }
 
     public Kategoria(String nimi, boolean pakollinen) {
         this.nimi.set(nimi);
         this.pakollinen.set(pakollinen);
+        idArvo = ++idArvoja;
+    }
+
+    public int getIdArvo() { // Tarvitaan Jackson JSON-integraation takia
+        return this.idArvo;
     }
 
     public String getNimi() {
@@ -50,6 +59,14 @@ public class Kategoria {
             return TarkistusVirhe.NIMI_EPAVALIDI;
         }
         return null;
+    }
+
+    public boolean nimetSamoja(Kategoria k) {
+        return k.getNimi().equals(getNimi());
+    }
+
+    public boolean equals(Kategoria k) {
+        return k.idArvo == idArvo;
     }
 
     @Override

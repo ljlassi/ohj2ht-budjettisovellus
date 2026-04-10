@@ -47,8 +47,4 @@ public class MockSeurantaRepository implements SeurantaRepository {
         return tallennetutKategoriat;
     }
 
-    public List<Tapahtuma> getTallennetutTapahtumat() {
-        return tallennetutTapahtumat;
-    }
-
 }

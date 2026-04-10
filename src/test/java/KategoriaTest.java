@@ -16,6 +16,7 @@ public class KategoriaTest {
         assertEquals(kategorianNimi, toinenTestiKategoria.getNimi(), "Annetun nimen tulisi täsmätä.");
     }
 
+    @Test
     void pakollinenTesti() {
         String kategorianNimi = "Toinen Testi Kategoria";
         boolean pakollinen = true;
