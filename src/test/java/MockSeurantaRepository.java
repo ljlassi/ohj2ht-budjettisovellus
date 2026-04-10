@@ -44,11 +44,11 @@ public class MockSeurantaRepository implements SeurantaRepository {
     }
 
     public List<Kategoria> getTallennetutKategoriat() {
-        return this.tallennetutKategoriat;
+        return tallennetutKategoriat;
     }
 
     public List<Tapahtuma> getTallennetutTapahtumat() {
-        return this.tallennetutTapahtumat;
+        return tallennetutTapahtumat;
     }
 
 }

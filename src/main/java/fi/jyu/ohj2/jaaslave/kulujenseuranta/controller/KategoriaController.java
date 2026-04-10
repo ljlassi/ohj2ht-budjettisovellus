@@ -49,7 +49,7 @@ public class KategoriaController implements Initializable {
 
         lisaaUusiKategoriaPainike.setOnAction(_ -> lisaaUusiKategoria());
         poistaKategoriaPainike.setOnAction(_ -> poistaKategoria());
-        tallennaMuutoksetKategoriaanPainike.setOnAction(_ -> this.tallennaMuutoksetKategoriaan());
+        tallennaMuutoksetKategoriaanPainike.setOnAction(_ -> tallennaMuutoksetKategoriaan());
         poistuKategoriaNakymastaPainike.setOnAction(_ -> sulje());
         muokattavanKategorianValitsin.setOnAction(_ -> naytaValitunKategorianTiedot());
 
@@ -63,27 +63,35 @@ public class KategoriaController implements Initializable {
         ikkuna.close();
     }
 
+    /**
+     * Tuodaan kategorialitaus tätä kautta tähän controlleriin.
+     *
+     * @param kategoriat Kategorialista
+     */
     public void setKategoriat(ObservableList<Kategoria> kategoriat) {
         this.kategoriat = kategoriat;
         muokattavanKategorianValitsin.setItems(this.kategoriat);
     }
 
     private void naytaValitunKategorianTiedot() {
-        this.valittuKategoria = muokattavanKategorianValitsin.getValue();
-        this.kategorianNimenMuokkain.setText(this.valittuKategoria.getNimi());
-        this.kategoriaPakollinenCheckBox.setSelected(this.valittuKategoria.getPakollinen());
+        valittuKategoria = muokattavanKategorianValitsin.getValue();
+        kategorianNimenMuokkain.setText(this.valittuKategoria.getNimi());
+        kategoriaPakollinenCheckBox.setSelected(this.valittuKategoria.getPakollinen());
     }
 
+    /**
+     * Kutsuu validointimetodia ja tallentaa sen jälkeen muutokset listaan.
+     */
     private void tallennaMuutoksetKategoriaan() {
         TarkistusVirhe validointi = validoiMuokkaus();
         if (validointi != null) {
             naytaValidointiVirheIlmoitus(validointi);
             return;
         }
-        String uusiNimi = this.kategorianNimenMuokkain.getText();
-        boolean onkoPakollinen = this.kategoriaPakollinenCheckBox.isSelected();
-        this.kategoriat.forEach(k -> {
-            if (k == this.valittuKategoria) {
+        String uusiNimi = kategorianNimenMuokkain.getText();
+        boolean onkoPakollinen = kategoriaPakollinenCheckBox.isSelected();
+        kategoriat.forEach(k -> {
+            if (k == valittuKategoria) {
                 k.setNimi(uusiNimi);
                 k.setPakollinen(onkoPakollinen);
             }
@@ -103,7 +111,7 @@ public class KategoriaController implements Initializable {
             naytaValidointiVirheIlmoitus(sisainenValidointi);
             return;
         }
-        this.kategoriat.add(uusiKategoria);
+        kategoriat.add(uusiKategoria);
         paivitaNakyma();
     }
 
@@ -112,7 +120,7 @@ public class KategoriaController implements Initializable {
     }
 
     private void poistaKategoria() {
-        if (this.valittuKategoria == null) {
+        if (valittuKategoria == null) {
             return;
         }
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
@@ -125,27 +133,27 @@ public class KategoriaController implements Initializable {
             return;
         }
         Kategoria poistettavaKategoria = muokattavanKategorianValitsin.getValue();
-        this.kategoriat.remove(poistettavaKategoria);
+        kategoriat.remove(poistettavaKategoria);
     }
 
     private TarkistusVirhe validoiLisays() {
-        if (this.uusiKategoriaKentta.getText().isBlank()) {
+        if (uusiKategoriaKentta.getText().isBlank()) {
             return TarkistusVirhe.NIMI_TYHJA;
         }
-        if (this.uusiKategoriaKentta.getText().length() > 60) {
+        if (uusiKategoriaKentta.getText().length() > 60) {
             return TarkistusVirhe.NIMI_EPAVALIDI;
         }
         return null;
     }
 
     private TarkistusVirhe validoiMuokkaus() {
-        if (this.valittuKategoria == null) {
+        if (valittuKategoria == null) {
             return TarkistusVirhe.KATEGORIA_TYHJA;
         }
-        if (this.kategorianNimenMuokkain.getText().isBlank()) {
+        if (kategorianNimenMuokkain.getText().isBlank()) {
             return TarkistusVirhe.NIMI_TYHJA;
         }
-        if (this.kategorianNimenMuokkain.getText().length() > 60) {
+        if (kategorianNimenMuokkain.getText().length() > 60) {
             return TarkistusVirhe.NIMI_EPAVALIDI;
         }
         return null;

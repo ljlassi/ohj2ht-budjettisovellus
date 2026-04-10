@@ -58,7 +58,7 @@ public class MainController implements Initializable {
     public void initialize(URL url, ResourceBundle resourceBundle) {
 
         // Alustetaan seuranta ja tiedostojen tallennus.
-        this.seuranta = new Seuranta(new JsonSeurantaRepository(Path.of("kategoriat.json"), Path.of("tapahtumat.json")));
+        seuranta = new Seuranta(new JsonSeurantaRepository(Path.of("kategoriat.json"), Path.of("tapahtumat.json")));
 
         alustaKayttoLiittyma();
 
@@ -75,52 +75,50 @@ public class MainController implements Initializable {
             paivitaNakyma();
         });
 
-        this.seuranta.getTapahtumat().addListener((ListChangeListener<Tapahtuma>) _ -> paivitaNakyma());
+        seuranta.getTapahtumat().addListener((ListChangeListener<Tapahtuma>) _ -> paivitaNakyma());
 
-        this.seuranta.getKategoriat().addListener((ListChangeListener<Kategoria>) _ -> paivitaNakyma());
+        seuranta.getKategoriat().addListener((ListChangeListener<Kategoria>) _ -> paivitaNakyma());
 
 
     }
 
     /**
-     * Käytetään tässä kohtaa siihen että saadaan jotain dataa sovellukseen,
-     * siirrytään pois tästä kun päästään siihen vaiheeseen että tieto tallentuu
-     * tiedostoon.
+     * Alustaa käyttöliittymän kun sovellus ensi kerran käynistetään.
      */
     private void alustaKayttoLiittyma() {
-        this.alkuPvmKentta.setValue(LocalDate.of(2026, 1, 1)); // TODO: Filtteröinnit kuntoon
-        this.loppuPvmKentta.setValue(LocalDate.now());
+        alkuPvmKentta.setValue(LocalDate.of(2026, 1, 1));
+        loppuPvmKentta.setValue(LocalDate.now());
 
-        this.seuranta.lataaKategoriat();
-        this.seuranta.lataaTapahtumat();
+        seuranta.lataaKategoriat();
+        seuranta.lataaTapahtumat();
 
         Kategoria esimerkkiKategoria;
 
-        if (this.seuranta.getKategoriat().isEmpty()) {
+        if (seuranta.getKategoriat().isEmpty()) {
             Kategoria esimerkkiKategoria2 = new Kategoria("Asuminen", true);
             esimerkkiKategoria = new Kategoria("Yleinen", false);
-            this.seuranta.lisaaKategoria(esimerkkiKategoria);
-            this.seuranta.lisaaKategoria(esimerkkiKategoria2);
+            seuranta.lisaaKategoria(esimerkkiKategoria);
+            seuranta.lisaaKategoria(esimerkkiKategoria2);
         }
 
-        if (this.seuranta.getTapahtumat().isEmpty()) {
-            if (this.seuranta.getKategoriat().isEmpty()) { // Mikäli tapahtumat ja kategoriat on molemmat tyhjiä
+        if (seuranta.getTapahtumat().isEmpty()) {
+            if (seuranta.getKategoriat().isEmpty()) { // Mikäli tapahtumat ja kategoriat on molemmat tyhjiä
                 Kategoria esimerkkiKategoria2 = new Kategoria("Asuminen", true);
                 esimerkkiKategoria = new Kategoria("Yleinen", false);
-                this.seuranta.lisaaKategoria(esimerkkiKategoria);
-                this.seuranta.lisaaKategoria(esimerkkiKategoria2);
+                seuranta.lisaaKategoria(esimerkkiKategoria);
+                seuranta.lisaaKategoria(esimerkkiKategoria2);
             } else {
-                esimerkkiKategoria = this.seuranta.getKategoriat().getFirst();
+                esimerkkiKategoria = seuranta.getKategoriat().getFirst();
             }
             Tapahtuma esimerkkiTapahtuma = new Tapahtuma();
             esimerkkiTapahtuma.setNimi("Esimerkkitapahtuma");
             esimerkkiTapahtuma.setSumma(100.0);
             esimerkkiTapahtuma.setKategoria(esimerkkiKategoria);
             esimerkkiTapahtuma.setPaivamaara(LocalDate.now());
-            this.seuranta.lisaaTapahtuma(esimerkkiTapahtuma);
+            seuranta.lisaaTapahtuma(esimerkkiTapahtuma);
         }
 
-        tapahtumaListaus.setItems(this.seuranta.getTapahtumat());
+        tapahtumaListaus.setItems(seuranta.getTapahtumat());
         tapahtumaListaus.setEditable(true);
 
         TableColumn<Tapahtuma, String> nimiSarake = new TableColumn<>("Nimi");
@@ -162,7 +160,7 @@ public class MainController implements Initializable {
             return row;
         });
 
-        this.paivitaNakyma();
+        paivitaNakyma();
     }
 
     private void avaaTapahtumaNakyma(Tapahtuma tapahtuma) {
@@ -174,8 +172,8 @@ public class MainController implements Initializable {
 
             TapahtumaController controller = loader.getController();
             controller.setTapahtuma(tapahtuma);
-            controller.setKategoriat(this.seuranta.getKategoriat());
-            controller.setTapahtumat(this.seuranta.getTapahtumat());
+            controller.setKategoriat(seuranta.getKategoriat());
+            controller.setTapahtumat(seuranta.getTapahtumat());
 
             Stage dialogi = new Stage();
             dialogi.setScene(scene);
@@ -200,8 +198,8 @@ public class MainController implements Initializable {
             Scene scene = new Scene(root);
 
             TapahtumaController controller = loader.getController();
-            controller.setKategoriat(this.seuranta.getKategoriat());
-            controller.setTapahtumat(this.seuranta.getTapahtumat());
+            controller.setKategoriat(seuranta.getKategoriat());
+            controller.setTapahtumat(seuranta.getTapahtumat());
 
             Stage dialogi = new Stage();
             dialogi.setScene(scene);
@@ -227,7 +225,7 @@ public class MainController implements Initializable {
             Scene scene = new Scene(root);
 
             KategoriaController controller = loader.getController();
-            controller.setKategoriat(this.seuranta.getKategoriat());
+            controller.setKategoriat(seuranta.getKategoriat());
 
             Stage dialogi = new Stage();
             dialogi.setScene(scene);
@@ -246,24 +244,24 @@ public class MainController implements Initializable {
 
     private void paivitaNakyma() {
 
-        if (this.seuranta.getKategoriat() != null) {
-            kategoriaValitsin.setItems(this.seuranta.getKategoriat());
+        if (seuranta.getKategoriat() != null) {
+            kategoriaValitsin.setItems(seuranta.getKategoriat());
         }
 
-        if (this.suodatetaankoTapahtumia) {
+        if (suodatetaankoTapahtumia) {
             // Suodatetaan tapahtumat valittuna olevan kategorian sekä valittujen päivämäärien mukaan.
-            this.tapahtumatFiltteroityna = new FilteredList<>(this.seuranta.getTapahtumat(), t ->
-                    (this.kategoriaValitsin.getValue() == null || t.getKategoria().getNimi().equals(this.kategoriaValitsin.getValue().getNimi())) &&
-                            (t.getPaivamaara().isAfter(this.alkuPvmKentta.getValue()) || t.getPaivamaara().equals(this.alkuPvmKentta.getValue())) &&
-                            (t.getPaivamaara().isBefore(this.loppuPvmKentta.getValue()) || t.getPaivamaara().equals(this.loppuPvmKentta.getValue()))
+            tapahtumatFiltteroityna = new FilteredList<>(seuranta.getTapahtumat(), t ->
+                    (kategoriaValitsin.getValue() == null || t.getKategoria().getNimi().equals(kategoriaValitsin.getValue().getNimi())) &&
+                            (t.getPaivamaara().isAfter(alkuPvmKentta.getValue()) || t.getPaivamaara().equals(alkuPvmKentta.getValue())) &&
+                            (t.getPaivamaara().isBefore(loppuPvmKentta.getValue()) || t.getPaivamaara().equals(loppuPvmKentta.getValue()))
 
             );
-            this.tapahtumaListaus.setItems(this.tapahtumatFiltteroityna);
+            tapahtumaListaus.setItems(tapahtumatFiltteroityna);
         } else if (naytetaankoVainPakollisetTapahtumat) {
-            this.tapahtumatFiltteroityna = new FilteredList<>(this.seuranta.getTapahtumat(), t -> t.getKategoria().getPakollinen());
-            tapahtumaListaus.setItems(this.tapahtumatFiltteroityna);
+            tapahtumatFiltteroityna = new FilteredList<>(seuranta.getTapahtumat(), t -> t.getKategoria().getPakollinen());
+            tapahtumaListaus.setItems(tapahtumatFiltteroityna);
         } else {
-            this.tapahtumaListaus.setItems(this.seuranta.getTapahtumat());
+            tapahtumaListaus.setItems(seuranta.getTapahtumat());
         }
         paivitaTapahtumatYhteensa();
         tapahtumaListaus.refresh();
@@ -271,18 +269,18 @@ public class MainController implements Initializable {
     }
 
     private void paivitaTapahtumatYhteensa() {
-        if (this.seuranta.getTapahtumat() != null) {
+        if (seuranta.getTapahtumat() != null) {
             double tulot;
             double menot;
-            if (!this.suodatetaankoTapahtumia && !this.naytetaankoVainPakollisetTapahtumat) {
-                tulot = this.seuranta.getTapahtumat().stream().filter(t -> t.getSumma() > 0).mapToDouble(Tapahtuma::getSumma).sum();
-                menot = this.seuranta.getTapahtumat().stream().filter(t -> t.getSumma() < 0).mapToDouble(Tapahtuma::getSumma).sum();
+            if (!suodatetaankoTapahtumia && !naytetaankoVainPakollisetTapahtumat) {
+                tulot = seuranta.getTapahtumat().stream().filter(t -> t.getSumma() > 0).mapToDouble(Tapahtuma::getSumma).sum();
+                menot = seuranta.getTapahtumat().stream().filter(t -> t.getSumma() < 0).mapToDouble(Tapahtuma::getSumma).sum();
             } else {
-                tulot = this.tapahtumatFiltteroityna.stream().filter(t -> t.getSumma() > 0).mapToDouble(Tapahtuma::getSumma).sum();
-                menot = this.tapahtumatFiltteroityna.stream().filter(t -> t.getSumma() < 0).mapToDouble(Tapahtuma::getSumma).sum();
+                tulot = tapahtumatFiltteroityna.stream().filter(t -> t.getSumma() > 0).mapToDouble(Tapahtuma::getSumma).sum();
+                menot = tapahtumatFiltteroityna.stream().filter(t -> t.getSumma() < 0).mapToDouble(Tapahtuma::getSumma).sum();
             }
-            this.tulotYhteensaTeksti.setText(Double.toString(tulot));
-            this.menotYhteensaTeksti.setText(Double.toString(menot));
+            tulotYhteensaTeksti.setText(Double.toString(tulot));
+            menotYhteensaTeksti.setText(Double.toString(menot));
 
         }
     }

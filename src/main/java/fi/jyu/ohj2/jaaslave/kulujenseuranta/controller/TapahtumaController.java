@@ -79,21 +79,21 @@ public class TapahtumaController implements Initializable {
             naytaValidointiVirheIlmoitus(kenttienValidointiVirhe);
             return;
         }
-        if (this.tapahtuma == null) {
+        if (tapahtuma == null) {
             uusiTapahtuma = true;
-            this.tapahtuma = new Tapahtuma();
+            tapahtuma = new Tapahtuma();
         }
-        this.tapahtuma.setNimi(tapahtumanAiheKentta.getText());
-        this.tapahtuma.setSumma(Double.parseDouble(tapahtumanSummaKentta.getText()));
+        tapahtuma.setNimi(tapahtumanAiheKentta.getText());
+        tapahtuma.setSumma(Double.parseDouble(tapahtumanSummaKentta.getText()));
         Kategoria kategoria = tapahtumanKategoriaValitsin.getValue();
-        this.tapahtuma.setKategoria(kategoria);
-        this.tapahtuma.setPaivamaara(paivamaaraValitsin.getValue());
+        tapahtuma.setKategoria(kategoria);
+        tapahtuma.setPaivamaara(paivamaaraValitsin.getValue());
         if (tapahtuma.tarkistaVirheet() != null) {
             naytaValidointiVirheIlmoitus(tapahtuma.tarkistaVirheet());
             return;
         }
         if (uusiTapahtuma) {
-            this.tapahtumat.add(this.tapahtuma);
+            tapahtumat.add(tapahtuma);
         }
         sulje();
     }
@@ -114,9 +114,9 @@ public class TapahtumaController implements Initializable {
         if (result.isPresent() && result.get() != ButtonType.OK) {
             return;
         }
-        this.tapahtumat.remove(this.tapahtuma);
-        this.tapahtuma = null;
-        this.sulje();
+        tapahtumat.remove(this.tapahtuma);
+        tapahtuma = null;
+        sulje();
     }
 
     private void naytaValidointiVirheIlmoitus(TarkistusVirhe virhe) {

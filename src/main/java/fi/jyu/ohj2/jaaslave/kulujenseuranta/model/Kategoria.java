@@ -19,7 +19,7 @@ public class Kategoria {
     }
 
     public String getNimi() {
-        return this.nimi.get();
+        return nimi.get();
     }
 
     public void setNimi(String nimi) {
@@ -27,11 +27,11 @@ public class Kategoria {
     }
 
     public StringProperty nimiProperty() {
-        return this.nimi;
+        return nimi;
     }
 
     public boolean getPakollinen() {
-        return this.pakollinen.get();
+        return pakollinen.get();
     }
 
     public void setPakollinen(boolean pakollinen) {
@@ -39,7 +39,7 @@ public class Kategoria {
     }
 
     public BooleanProperty pakollinenProperty() {
-        return this.pakollinen;
+        return pakollinen;
     }
 
     public TarkistusVirhe tarkistaVirheet() {

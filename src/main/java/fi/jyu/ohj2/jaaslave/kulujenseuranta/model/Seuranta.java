@@ -32,10 +32,10 @@ public class Seuranta {
 
         this.repository = repository;
 
-        this.kategoriat.addListener((ListChangeListener<Kategoria>) change -> {
+        kategoriat.addListener((ListChangeListener<Kategoria>) change -> {
             while (change.next()) {
                 if (change.wasRemoved()) {
-                    this.tapahtumat.forEach(t -> {
+                    tapahtumat.forEach(t -> {
                         if (t.getKategoria().getNimi().equals(change.getRemoved().getFirst().getNimi())) {
                             t.setKategoria(null);
                         }
@@ -43,7 +43,7 @@ public class Seuranta {
                 } else if (change.wasUpdated()) {
                     for (int i = change.getFrom(); i < change.getTo(); i++) {
                         Kategoria k = change.getList().get(i);
-                        this.tapahtumat.forEach(t -> {
+                        tapahtumat.forEach(t -> {
                             if (t.getKategoria() == k)
                                 t.setKategoria(k);
                         });
@@ -51,25 +51,25 @@ public class Seuranta {
                 }
             }
             this.tallennaKategoriat();
-            if (!this.getTapahtumat().isEmpty()) {
-                this.tallennaTapahtumat(); // Tallennetaan myös tapahtumat (mikäli niitä on), siltä varala että kategoriamuutokset heijastuu myös niihin.
+            if (!getTapahtumat().isEmpty()) {
+                tallennaTapahtumat(); // Tallennetaan myös tapahtumat (mikäli niitä on), siltä varala että kategoriamuutokset heijastuu myös niihin.
             }
         });
 
-        this.tapahtumat.addListener((ListChangeListener<Tapahtuma>) _ -> this.tallennaTapahtumat());
+        this.tapahtumat.addListener((ListChangeListener<Tapahtuma>) _ -> tallennaTapahtumat());
 
     }
 
     public ObservableList<Tapahtuma> getTapahtumat() {
-        return this.tapahtumat;
+        return tapahtumat;
     }
 
     public void lisaaTapahtuma(Tapahtuma tapahtuma) {
-        this.tapahtumat.add(tapahtuma);
+        tapahtumat.add(tapahtuma);
     }
 
     public ObservableList<Kategoria> getKategoriat() {
-        return this.kategoriat;
+        return kategoriat;
     }
 
     public void lisaaKategoria(Kategoria kategoria) {
@@ -79,7 +79,7 @@ public class Seuranta {
         if (kategoria.getNimi().isBlank()) {
             return;
         }
-        this.kategoriat.add(kategoria);
+        kategoriat.add(kategoria);
     }
 
     public void lataaTapahtumat() {
@@ -93,7 +93,7 @@ public class Seuranta {
 
     public void tallennaTapahtumat() {
         try {
-            repository.tallennaTapahtumat(this.getTapahtumat());
+            repository.tallennaTapahtumat(getTapahtumat());
         } catch (RepositoryException e) {
             IO.println(e.getMessage());
         }
@@ -110,7 +110,7 @@ public class Seuranta {
 
     public void tallennaKategoriat() {
         try {
-            repository.tallennaKategoriat(this.getKategoriat());
+            repository.tallennaKategoriat(getKategoriat());
         } catch (RepositoryException e) {
             IO.println(e.getMessage());
         }

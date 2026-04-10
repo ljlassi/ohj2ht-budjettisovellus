@@ -16,7 +16,7 @@ public class Tapahtuma {
     }
 
     public String getNimi() {
-        return this.nimi.get();
+        return nimi.get();
     }
 
     public void setNimi(String nimi) {
@@ -24,11 +24,11 @@ public class Tapahtuma {
     }
 
     public StringProperty nimiProperty() {
-        return this.nimi;
+        return nimi;
     }
 
     public double getSumma() {
-        return this.summa.get();
+        return summa.get();
     }
 
     public void setSumma(double summa) {
@@ -36,15 +36,15 @@ public class Tapahtuma {
     }
 
     public DoubleProperty summaProperty() {
-        return this.summa;
+        return summa;
     }
 
     public ObjectProperty<LocalDate> paivamaaraProperty() {
-        return this.paivamaara;
+        return paivamaara;
     }
 
     public LocalDate getPaivamaara() {
-        return this.paivamaara.get();
+        return paivamaara.get();
     }
 
     public void setPaivamaara(LocalDate paivamaara) {
@@ -52,11 +52,11 @@ public class Tapahtuma {
     }
 
     public ObjectProperty<Kategoria> kategoriaProperty() {
-        return this.kategoria;
+        return kategoria;
     }
 
     public Kategoria getKategoria() {
-        return this.kategoria.get();
+        return kategoria.get();
     }
 
     public void setKategoria(Kategoria kategoria) {
