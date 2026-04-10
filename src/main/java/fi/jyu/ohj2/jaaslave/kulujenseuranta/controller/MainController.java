@@ -27,41 +27,29 @@ import java.util.ResourceBundle;
 
 public class MainController implements Initializable {
 
+    FilteredList<Tapahtuma> tapahtumatFiltteroityna;
     @FXML
     private DatePicker alkuPvmKentta;
-
     @FXML
     private DatePicker loppuPvmKentta;
-
     @FXML
     private ComboBox<Kategoria> kategoriaValitsin;
-
     @FXML
     private Hyperlink muokkaaKategorioitaLinkki;
-
     @FXML
     private Button lisaaTapahtumaPainike;
-
     @FXML
     private TableView<Tapahtuma> tapahtumaListaus;
-
     @FXML
     private Text menotYhteensaTeksti;
-
     @FXML
     private Text tulotYhteensaTeksti;
-
     @FXML
     private Seuranta seuranta;
-
     @FXML
     private ToggleButton vainPakollisetNappain;
-
     @FXML
     private ToggleButton suodataPainike;
-
-    FilteredList<Tapahtuma> tapahtumatFiltteroityna;
-
     private boolean naytetaankoVainPakollisetTapahtumat;
 
     private boolean suodatetaankoTapahtumia = false;
@@ -108,15 +96,15 @@ public class MainController implements Initializable {
 
         Kategoria esimerkkiKategoria;
 
-        if(this.seuranta.getKategoriat().isEmpty()) {
+        if (this.seuranta.getKategoriat().isEmpty()) {
             Kategoria esimerkkiKategoria2 = new Kategoria("Asuminen", true);
             esimerkkiKategoria = new Kategoria("Yleinen", false);
             this.seuranta.lisaaKategoria(esimerkkiKategoria);
             this.seuranta.lisaaKategoria(esimerkkiKategoria2);
         }
 
-        if(this.seuranta.getTapahtumat().isEmpty()) {
-            if(this.seuranta.getKategoriat().isEmpty()) { // Mikäli tapahtumat ja kategoriat on molemmat tyhjiä
+        if (this.seuranta.getTapahtumat().isEmpty()) {
+            if (this.seuranta.getKategoriat().isEmpty()) { // Mikäli tapahtumat ja kategoriat on molemmat tyhjiä
                 Kategoria esimerkkiKategoria2 = new Kategoria("Asuminen", true);
                 esimerkkiKategoria = new Kategoria("Yleinen", false);
                 this.seuranta.lisaaKategoria(esimerkkiKategoria);
@@ -258,20 +246,20 @@ public class MainController implements Initializable {
 
     private void paivitaNakyma() {
 
-        if(this.seuranta.getKategoriat() != null) {
+        if (this.seuranta.getKategoriat() != null) {
             kategoriaValitsin.setItems(this.seuranta.getKategoriat());
         }
 
-        if(this.suodatetaankoTapahtumia) {
+        if (this.suodatetaankoTapahtumia) {
             // Suodatetaan tapahtumat valittuna olevan kategorian sekä valittujen päivämäärien mukaan.
             this.tapahtumatFiltteroityna = new FilteredList<>(this.seuranta.getTapahtumat(), t ->
                     (this.kategoriaValitsin.getValue() == null || t.getKategoria().getNimi().equals(this.kategoriaValitsin.getValue().getNimi())) &&
                             (t.getPaivamaara().isAfter(this.alkuPvmKentta.getValue()) || t.getPaivamaara().equals(this.alkuPvmKentta.getValue())) &&
                             (t.getPaivamaara().isBefore(this.loppuPvmKentta.getValue()) || t.getPaivamaara().equals(this.loppuPvmKentta.getValue()))
 
-                    );
+            );
             this.tapahtumaListaus.setItems(this.tapahtumatFiltteroityna);
-        } else if(naytetaankoVainPakollisetTapahtumat) {
+        } else if (naytetaankoVainPakollisetTapahtumat) {
             this.tapahtumatFiltteroityna = new FilteredList<>(this.seuranta.getTapahtumat(), t -> t.getKategoria().getPakollinen());
             tapahtumaListaus.setItems(this.tapahtumatFiltteroityna);
         } else {
@@ -283,10 +271,10 @@ public class MainController implements Initializable {
     }
 
     private void paivitaTapahtumatYhteensa() {
-        if(this.seuranta.getTapahtumat() != null) {
-            double tulot = 0.0;
-            double menot = 0.0;
-            if(!this.suodatetaankoTapahtumia && !this.naytetaankoVainPakollisetTapahtumat) {
+        if (this.seuranta.getTapahtumat() != null) {
+            double tulot;
+            double menot;
+            if (!this.suodatetaankoTapahtumia && !this.naytetaankoVainPakollisetTapahtumat) {
                 tulot = this.seuranta.getTapahtumat().stream().filter(t -> t.getSumma() > 0).mapToDouble(Tapahtuma::getSumma).sum();
                 menot = this.seuranta.getTapahtumat().stream().filter(t -> t.getSumma() < 0).mapToDouble(Tapahtuma::getSumma).sum();
             } else {

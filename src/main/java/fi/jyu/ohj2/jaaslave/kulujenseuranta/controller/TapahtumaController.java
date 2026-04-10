@@ -53,13 +53,13 @@ public class TapahtumaController implements Initializable {
 
     public void setTapahtuma(Tapahtuma tapahtuma) {
         this.tapahtuma = tapahtuma;
-        if(!tapahtuma.getNimi().isBlank()) {
+        if (!tapahtuma.getNimi().isBlank()) {
             tapahtumanAiheKentta.setText(tapahtuma.getNimi());
         }
-        if(tapahtuma.getSumma() != 0.0) {
+        if (tapahtuma.getSumma() != 0.0) {
             tapahtumanSummaKentta.setText(Double.toString(tapahtuma.getSumma()));
         }
-        if(tapahtuma.getPaivamaara().isBefore(LocalDate.now()) || tapahtuma.getPaivamaara().equals(LocalDate.now())) { // Tällainen validointiratkaisu tähän alustavasti...
+        if (tapahtuma.getPaivamaara().isBefore(LocalDate.now()) || tapahtuma.getPaivamaara().equals(LocalDate.now())) { // Tällainen validointiratkaisu tähän alustavasti...
             paivamaaraValitsin.setValue(tapahtuma.getPaivamaara());
         }
     }
@@ -75,11 +75,11 @@ public class TapahtumaController implements Initializable {
     private void lisaaTapahtuma() {
         boolean uusiTapahtuma = false;
         TarkistusVirhe kenttienValidointiVirhe = validoiKentat();
-        if(kenttienValidointiVirhe != null) {
+        if (kenttienValidointiVirhe != null) {
             naytaValidointiVirheIlmoitus(kenttienValidointiVirhe);
             return;
         }
-        if(this.tapahtuma == null) {
+        if (this.tapahtuma == null) {
             uusiTapahtuma = true;
             this.tapahtuma = new Tapahtuma();
         }
@@ -88,11 +88,11 @@ public class TapahtumaController implements Initializable {
         Kategoria kategoria = tapahtumanKategoriaValitsin.getValue();
         this.tapahtuma.setKategoria(kategoria);
         this.tapahtuma.setPaivamaara(paivamaaraValitsin.getValue());
-        if(tapahtuma.tarkistaVirheet() != null) {
+        if (tapahtuma.tarkistaVirheet() != null) {
             naytaValidointiVirheIlmoitus(tapahtuma.tarkistaVirheet());
             return;
         }
-        if(uusiTapahtuma) {
+        if (uusiTapahtuma) {
             this.tapahtumat.add(this.tapahtuma);
         }
         sulje();
@@ -111,7 +111,7 @@ public class TapahtumaController implements Initializable {
         alert.setContentText("Tapahtuma " + tapahtuma.getNimi() + " poistetaan.");
 
         Optional<ButtonType> result = alert.showAndWait();
-        if (result.isPresent() && result.get() != ButtonType.OK){
+        if (result.isPresent() && result.get() != ButtonType.OK) {
             return;
         }
         this.tapahtumat.remove(this.tapahtuma);
@@ -121,14 +121,19 @@ public class TapahtumaController implements Initializable {
 
     private void naytaValidointiVirheIlmoitus(TarkistusVirhe virhe) {
         String virheIlmoitus = "";
-        switch(virhe) {
+        switch (virhe) {
             case TarkistusVirhe.NIMI_TYHJA -> virheIlmoitus = "Nimikenttä ei saa olla tyhjä.";
-            case TarkistusVirhe.NIMI_EPAVALIDI -> virheIlmoitus = "Nimi on epävalidi, tarkista nimen muotoilu ja pituus.";
+            case TarkistusVirhe.NIMI_EPAVALIDI ->
+                    virheIlmoitus = "Nimi on epävalidi, tarkista nimen muotoilu ja pituus.";
             case TarkistusVirhe.SUMMA_TYHJA -> virheIlmoitus = "Summaa ei ole annettu.";
-            case TarkistusVirhe.SUMMA_EPAVALIDI -> virheIlmoitus = "Annettu summa on epävalidi, tarkista että annoit numeerisen arvon";
-            case TarkistusVirhe.PAIVAMAARA_TYHJA -> virheIlmoitus = "Päivämäärää ei ole asetettu, päivämäärä vaaditaan.";
-            case TarkistusVirhe.PAIVAMAARA_EPAVALIDI -> virheIlmoitus = "Päivämäärässä on vikaa, tarkista ettei se ole tulevaisuudessa!";
-            case TarkistusVirhe.KATEGORIA_TYHJA -> virheIlmoitus = "Kategoriaa ei ole valittu, tapahtumalla täytyy olla kategoria.";
+            case TarkistusVirhe.SUMMA_EPAVALIDI ->
+                    virheIlmoitus = "Annettu summa on epävalidi, tarkista että annoit numeerisen arvon";
+            case TarkistusVirhe.PAIVAMAARA_TYHJA ->
+                    virheIlmoitus = "Päivämäärää ei ole asetettu, päivämäärä vaaditaan.";
+            case TarkistusVirhe.PAIVAMAARA_EPAVALIDI ->
+                    virheIlmoitus = "Päivämäärässä on vikaa, tarkista ettei se ole tulevaisuudessa!";
+            case TarkistusVirhe.KATEGORIA_TYHJA ->
+                    virheIlmoitus = "Kategoriaa ei ole valittu, tapahtumalla täytyy olla kategoria.";
         }
 
         Alert alert = new Alert(Alert.AlertType.ERROR);
@@ -145,22 +150,22 @@ public class TapahtumaController implements Initializable {
      *
      */
     private TarkistusVirhe validoiKentat() {
-        if(tapahtumanAiheKentta.getText().isBlank()) {
+        if (tapahtumanAiheKentta.getText().isBlank()) {
             return TarkistusVirhe.NIMI_TYHJA;
         }
-        if(tapahtumanAiheKentta.getText().length() > 255) {
+        if (tapahtumanAiheKentta.getText().length() > 255) {
             return TarkistusVirhe.NIMI_EPAVALIDI;
         }
-        if(tapahtumanSummaKentta.getText().isBlank()) {
+        if (tapahtumanSummaKentta.getText().isBlank()) {
             return TarkistusVirhe.SUMMA_TYHJA;
         }
-        if(!onNumeerinen(tapahtumanSummaKentta.getText())) {
+        if (!onNumeerinen(tapahtumanSummaKentta.getText())) {
             return TarkistusVirhe.SUMMA_EPAVALIDI;
         }
-        if(paivamaaraValitsin.getValue() == null) {
+        if (paivamaaraValitsin.getValue() == null) {
             return TarkistusVirhe.PAIVAMAARA_TYHJA;
         }
-        if(tapahtumanKategoriaValitsin.getValue() == null) {
+        if (tapahtumanKategoriaValitsin.getValue() == null) {
             return TarkistusVirhe.KATEGORIA_TYHJA;
         }
         return null;
@@ -175,7 +180,7 @@ public class TapahtumaController implements Initializable {
         try {
             Double.parseDouble(str);
             return true;
-        } catch(NumberFormatException e){
+        } catch (NumberFormatException e) {
             return false;
         }
     }

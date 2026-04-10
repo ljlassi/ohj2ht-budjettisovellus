@@ -7,19 +7,18 @@ import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class Seuranta {
 
     private final ObservableList<Kategoria> kategoriat = FXCollections.observableArrayList(
-            kategoria -> new Observable[] {
+            kategoria -> new Observable[]{
                     kategoria.nimiProperty(),
                     kategoria.pakollinenProperty()
             }
     );
     private final ObservableList<Tapahtuma> tapahtumat = FXCollections.observableArrayList(
-            tapahtuma -> new Observable[] {
+            tapahtuma -> new Observable[]{
                     tapahtuma.nimiProperty(),
                     tapahtuma.summaProperty(),
                     tapahtuma.paivamaaraProperty(),
@@ -34,30 +33,30 @@ public class Seuranta {
         this.repository = repository;
 
         this.kategoriat.addListener((ListChangeListener<Kategoria>) change -> {
-            while(change.next()) {
-                if(change.wasRemoved()) {
-                        this.tapahtumat.forEach(t -> {
-                            if(t.getKategoria().getNimi().equals(change.getRemoved().getFirst().getNimi())) {
-                                t.setKategoria(null);
-                            }
-                        });
-                } else if(change.wasUpdated()) {
+            while (change.next()) {
+                if (change.wasRemoved()) {
+                    this.tapahtumat.forEach(t -> {
+                        if (t.getKategoria().getNimi().equals(change.getRemoved().getFirst().getNimi())) {
+                            t.setKategoria(null);
+                        }
+                    });
+                } else if (change.wasUpdated()) {
                     for (int i = change.getFrom(); i < change.getTo(); i++) {
                         Kategoria k = change.getList().get(i);
                         this.tapahtumat.forEach(t -> {
-                            if(t.getKategoria() == k)
+                            if (t.getKategoria() == k)
                                 t.setKategoria(k);
                         });
                     }
                 }
             }
             this.tallennaKategoriat();
-            if(!this.getTapahtumat().isEmpty()) {
+            if (!this.getTapahtumat().isEmpty()) {
                 this.tallennaTapahtumat(); // Tallennetaan myös tapahtumat (mikäli niitä on), siltä varala että kategoriamuutokset heijastuu myös niihin.
             }
-        } );
+        });
 
-        this.tapahtumat.addListener((ListChangeListener<Tapahtuma>) _ -> this.tallennaTapahtumat() );
+        this.tapahtumat.addListener((ListChangeListener<Tapahtuma>) _ -> this.tallennaTapahtumat());
 
     }
 
@@ -74,7 +73,7 @@ public class Seuranta {
     }
 
     public void lisaaKategoria(Kategoria kategoria) {
-        if(kategoria == null) {
+        if (kategoria == null) {
             return;
         }
         if (kategoria.getNimi().isBlank()) {
@@ -87,7 +86,7 @@ public class Seuranta {
         try {
             List<Tapahtuma> kaikkiTapahtumat = repository.lataaTapahtumat();
             tapahtumat.addAll(kaikkiTapahtumat);
-        } catch(RepositoryException e) {
+        } catch (RepositoryException e) {
             IO.println(e.getMessage());
         }
     }
@@ -95,7 +94,7 @@ public class Seuranta {
     public void tallennaTapahtumat() {
         try {
             repository.tallennaTapahtumat(this.getTapahtumat());
-        } catch(RepositoryException e) {
+        } catch (RepositoryException e) {
             IO.println(e.getMessage());
         }
     }
@@ -104,7 +103,7 @@ public class Seuranta {
         try {
             List<Kategoria> kaikkiKategoriat = repository.lataaKategoriat();
             kategoriat.addAll(kaikkiKategoriat);
-        } catch(RepositoryException e) {
+        } catch (RepositoryException e) {
             IO.println(e.getMessage());
         }
     }
@@ -112,11 +111,10 @@ public class Seuranta {
     public void tallennaKategoriat() {
         try {
             repository.tallennaKategoriat(this.getKategoriat());
-        } catch(RepositoryException e) {
+        } catch (RepositoryException e) {
             IO.println(e.getMessage());
         }
     }
-
 
 
 }

@@ -26,7 +26,8 @@ public class JsonSeurantaRepository implements SeurantaRepository {
         if (Files.notExists(kategorioidenTallennusTiedosto)) {
             return List.of();
         }
-        return mapper.readValue(kategorioidenTallennusTiedosto.toFile(), new TypeReference<>() {});
+        return mapper.readValue(kategorioidenTallennusTiedosto.toFile(), new TypeReference<>() {
+        });
     }
 
     @Override
@@ -38,7 +39,8 @@ public class JsonSeurantaRepository implements SeurantaRepository {
         if (Files.notExists(tapahtumienTallenusTiedosto)) {
             return List.of();
         }
-        return mapper.readValue(tapahtumienTallenusTiedosto.toFile(), new TypeReference<>() {});
+        return mapper.readValue(tapahtumienTallenusTiedosto.toFile(), new TypeReference<>() {
+        });
     }
 
     @Override

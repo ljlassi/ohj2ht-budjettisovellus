@@ -76,14 +76,14 @@ public class KategoriaController implements Initializable {
 
     private void tallennaMuutoksetKategoriaan() {
         TarkistusVirhe validointi = validoiMuokkaus();
-        if(validointi != null) {
+        if (validointi != null) {
             naytaValidointiVirheIlmoitus(validointi);
             return;
         }
         String uusiNimi = this.kategorianNimenMuokkain.getText();
         boolean onkoPakollinen = this.kategoriaPakollinenCheckBox.isSelected();
         this.kategoriat.forEach(k -> {
-            if(k == this.valittuKategoria) {
+            if (k == this.valittuKategoria) {
                 k.setNimi(uusiNimi);
                 k.setPakollinen(onkoPakollinen);
             }
@@ -92,14 +92,14 @@ public class KategoriaController implements Initializable {
 
     private void lisaaUusiKategoria() {
         TarkistusVirhe validointi = validoiLisays();
-        if(validointi != null) {
+        if (validointi != null) {
             naytaValidointiVirheIlmoitus(validointi);
             return;
         }
         String nimi = uusiKategoriaKentta.getText();
         Kategoria uusiKategoria = new Kategoria(nimi, false);
         TarkistusVirhe sisainenValidointi = uusiKategoria.tarkistaVirheet();
-        if(sisainenValidointi != null) {
+        if (sisainenValidointi != null) {
             naytaValidointiVirheIlmoitus(sisainenValidointi);
             return;
         }
@@ -112,7 +112,7 @@ public class KategoriaController implements Initializable {
     }
 
     private void poistaKategoria() {
-        if(this.valittuKategoria == null) {
+        if (this.valittuKategoria == null) {
             return;
         }
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
@@ -121,7 +121,7 @@ public class KategoriaController implements Initializable {
         alert.setContentText("Kateogoria " + muokattavanKategorianValitsin.getValue().getNimi() + " poistetaan.");
 
         Optional<ButtonType> result = alert.showAndWait();
-        if (result.isPresent() && result.get() != ButtonType.OK){
+        if (result.isPresent() && result.get() != ButtonType.OK) {
             return;
         }
         Kategoria poistettavaKategoria = muokattavanKategorianValitsin.getValue();
@@ -129,23 +129,23 @@ public class KategoriaController implements Initializable {
     }
 
     private TarkistusVirhe validoiLisays() {
-        if(this.uusiKategoriaKentta.getText().isBlank()) {
+        if (this.uusiKategoriaKentta.getText().isBlank()) {
             return TarkistusVirhe.NIMI_TYHJA;
         }
-        if(this.uusiKategoriaKentta.getText().length() > 60) {
+        if (this.uusiKategoriaKentta.getText().length() > 60) {
             return TarkistusVirhe.NIMI_EPAVALIDI;
         }
         return null;
     }
 
     private TarkistusVirhe validoiMuokkaus() {
-        if(this.valittuKategoria == null) {
+        if (this.valittuKategoria == null) {
             return TarkistusVirhe.KATEGORIA_TYHJA;
         }
-        if(this.kategorianNimenMuokkain.getText().isBlank()) {
+        if (this.kategorianNimenMuokkain.getText().isBlank()) {
             return TarkistusVirhe.NIMI_TYHJA;
         }
-        if(this.kategorianNimenMuokkain.getText().length() > 60) {
+        if (this.kategorianNimenMuokkain.getText().length() > 60) {
             return TarkistusVirhe.NIMI_EPAVALIDI;
         }
         return null;

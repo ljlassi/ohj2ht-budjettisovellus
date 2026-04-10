@@ -15,24 +15,24 @@ public class Tapahtuma {
     public Tapahtuma() {
     }
 
-    public void setNimi(String nimi) {
-        this.nimi.set(nimi);
-    }
-
     public String getNimi() {
         return this.nimi.get();
+    }
+
+    public void setNimi(String nimi) {
+        this.nimi.set(nimi);
     }
 
     public StringProperty nimiProperty() {
         return this.nimi;
     }
 
-    public void setSumma(double summa) {
-        this.summa.set(summa);
-    }
-
     public double getSumma() {
         return this.summa.get();
+    }
+
+    public void setSumma(double summa) {
+        this.summa.set(summa);
     }
 
     public DoubleProperty summaProperty() {
@@ -65,19 +65,19 @@ public class Tapahtuma {
 
 
     public TarkistusVirhe tarkistaVirheet() {
-        if(getNimi().isBlank()) {
+        if (getNimi().isBlank()) {
             return TarkistusVirhe.NIMI_TYHJA;
         }
-        if(getNimi().length() > 255) {
+        if (getNimi().length() > 255) {
             return TarkistusVirhe.NIMI_EPAVALIDI;
         }
-        if(getPaivamaara() == null) {
+        if (getPaivamaara() == null) {
             return TarkistusVirhe.PAIVAMAARA_TYHJA;
         }
-        if(getPaivamaara().isAfter(LocalDate.now())) {
+        if (getPaivamaara().isAfter(LocalDate.now())) {
             return TarkistusVirhe.PAIVAMAARA_EPAVALIDI;
         }
-        if(getKategoria() == null) {
+        if (getKategoria() == null) {
             return TarkistusVirhe.KATEGORIA_TYHJA;
         }
         return null;

@@ -8,7 +8,10 @@ import java.util.List;
 public interface SeurantaRepository {
 
     List<Kategoria> lataaKategoriat() throws RepositoryException;
+
     List<Tapahtuma> lataaTapahtumat() throws RepositoryException;
+
     void tallennaKategoriat(List<Kategoria> kategoriat) throws RepositoryException;
+
     void tallennaTapahtumat(List<Tapahtuma> tapahtumat) throws RepositoryException;
 }

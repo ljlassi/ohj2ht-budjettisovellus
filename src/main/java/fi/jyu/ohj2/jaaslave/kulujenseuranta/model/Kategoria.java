@@ -10,31 +10,32 @@ public class Kategoria {
     private final StringProperty nimi = new SimpleStringProperty("");
     private final BooleanProperty pakollinen = new SimpleBooleanProperty(false);
 
-    public Kategoria() {}
+    public Kategoria() {
+    }
 
     public Kategoria(String nimi, boolean pakollinen) {
         this.nimi.set(nimi);
         this.pakollinen.set(pakollinen);
     }
 
-    public void setNimi(String nimi) {
-        this.nimi.set(nimi);
-    }
-
     public String getNimi() {
         return this.nimi.get();
+    }
+
+    public void setNimi(String nimi) {
+        this.nimi.set(nimi);
     }
 
     public StringProperty nimiProperty() {
         return this.nimi;
     }
 
-    public void setPakollinen(boolean pakollinen) {
-        this.pakollinen.set(pakollinen);
-    }
-
     public boolean getPakollinen() {
         return this.pakollinen.get();
+    }
+
+    public void setPakollinen(boolean pakollinen) {
+        this.pakollinen.set(pakollinen);
     }
 
     public BooleanProperty pakollinenProperty() {
@@ -42,10 +43,10 @@ public class Kategoria {
     }
 
     public TarkistusVirhe tarkistaVirheet() {
-        if(getNimi().isBlank()) {
+        if (getNimi().isBlank()) {
             return TarkistusVirhe.NIMI_TYHJA;
         }
-        if(getNimi().length() > 60) {
+        if (getNimi().length() > 60) {
             return TarkistusVirhe.NIMI_EPAVALIDI;
         }
         return null;
