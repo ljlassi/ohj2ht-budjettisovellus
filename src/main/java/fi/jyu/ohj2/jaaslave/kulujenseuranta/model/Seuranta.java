@@ -89,7 +89,7 @@ public class Seuranta {
         kategoriat.add(kategoria);
     }
 
-    public void lataaTapahtumat() {
+    private void lataaTapahtumat() {
         try {
             List<Tapahtuma> kaikkiTapahtumat = repository.lataaTapahtumat();
             tapahtumat.addAll(kaikkiTapahtumat);
@@ -99,6 +99,7 @@ public class Seuranta {
     }
 
     public void tallennaTapahtumat() {
+        varmistaDatanIntegriteetti();
         try {
             repository.tallennaTapahtumat(getTapahtumat());
         } catch (RepositoryException e) {
@@ -106,7 +107,7 @@ public class Seuranta {
         }
     }
 
-    public void lataaKategoriat() {
+    private void lataaKategoriat() {
         try {
             List<Kategoria> kaikkiKategoriat = repository.lataaKategoriat();
             kategoriat.addAll(kaikkiKategoriat);
@@ -116,11 +117,42 @@ public class Seuranta {
     }
 
     public void tallennaKategoriat() {
+        varmistaDatanIntegriteetti();
         try {
             repository.tallennaKategoriat(getKategoriat());
         } catch (RepositoryException e) {
             IO.println(e.getMessage());
         }
+    }
+
+    /**
+     * Tämän metodin avulla voidaan varmistaa ettei dataan ilmesty samalla nimellä useita eri kategorioita.
+     * Käytännössä nimeltään päällekkäisten kategorioiden luominen estetään käyttöliittymätasolla, mutta
+     * ilman mitään tsekkauksia voi joskus käydä ainakin latauksen yhteydessä niin että tapahtumien kategoria-objektit
+     * eivät täsmäisikään viitteiltään muistissa jo olevia kategoria-objekteja.
+     */
+    private void varmistaDatanIntegriteetti() {
+        tapahtumat.forEach(t -> {
+            Kategoria k = palautaSamanNiminenKategoria(t.getKategoria());
+            if(k != null) {
+                t.setKategoria(k);
+            }
+        });
+    }
+
+    private Kategoria palautaSamanNiminenKategoria(Kategoria kategoria) {
+        for(Kategoria k : kategoriat) {
+            if(k.nimetSamoja(kategoria)) {
+                return k;
+            }
+        }
+        return null;
+    }
+
+    public void lataaDataTiedostosta() {
+        lataaKategoriat();
+        lataaTapahtumat();
+        varmistaDatanIntegriteetti();
     }
 
 

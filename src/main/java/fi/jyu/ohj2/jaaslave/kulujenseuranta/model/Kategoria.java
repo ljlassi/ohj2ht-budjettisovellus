@@ -23,7 +23,7 @@ public class Kategoria {
         idArvo = ++idArvoja;
     }
 
-    public int getIdArvo() { // Tarvitaan Jackson JSON-integraation takia
+    public int getIdArvo() { // Tarvitaan Jackson JSON-integraation takia, jotta ID-arvot tallentuvat tiedostoon.
         return this.idArvo;
     }
 

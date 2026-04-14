@@ -59,7 +59,7 @@
             <HBox alignment="BOTTOM_LEFT" prefHeight="100.0" prefWidth="200.0" spacing="20.0">
                <children>
                   <Button fx:id="poistaTapahtumaPainike" mnemonicParsing="false" style="-fx-background-color: red;" text="Poista" textFill="WHITE" />
-                  <Button fx:id="lisaaTapahtumaPainike" alignment="TOP_CENTER" mnemonicParsing="false" style="-fx-background-color: green;" text="Lisää" textFill="WHITE" />
+                  <Button fx:id="lisaaTapahtumaPainike" alignment="TOP_CENTER" mnemonicParsing="false" style="-fx-background-color: green;" text="Tallenna" textFill="WHITE" />
                </children>
             </HBox>
             <HBox alignment="BOTTOM_RIGHT" prefHeight="100.0" prefWidth="200.0">

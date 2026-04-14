@@ -144,6 +144,9 @@ public class KategoriaController implements Initializable {
         if (uusiKategoriaKentta.getText().length() > 60) {
             return TarkistusVirhe.NIMI_EPAVALIDI;
         }
+        if(samanNiminenKategoriaJoOlemassa(uusiKategoriaKentta.getText())) {
+            return TarkistusVirhe.KATEGORIA_EI_UNIIKKI;
+        }
         return null;
     }
 
@@ -157,6 +160,9 @@ public class KategoriaController implements Initializable {
         if (kategorianNimenMuokkain.getText().length() > 60) {
             return TarkistusVirhe.NIMI_EPAVALIDI;
         }
+        if(samanNiminenKategoriaJoOlemassa(kategorianNimenMuokkain.getText())) {
+            return TarkistusVirhe.KATEGORIA_EI_UNIIKKI;
+        }
         return null;
     }
 
@@ -167,11 +173,21 @@ public class KategoriaController implements Initializable {
             case TarkistusVirhe.NIMI_EPAVALIDI ->
                     virheIlmoitus = "Kategorialle annettu nimi on epävalidi tai liian pitkä.";
             case TarkistusVirhe.KATEGORIA_TYHJA -> virheIlmoitus = "Valitse muokattava kategoria.";
+            case TarkistusVirhe.KATEGORIA_EI_UNIIKKI -> virheIlmoitus = "Saman niminen kategoria on jo olemassa. Poista ensin vanha kategoria tai nimeä se uudelleen.";
         }
         Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.setTitle("Validointivirhe");
         alert.setHeaderText("Virhe kategorian tiedoissa!");
         alert.setContentText(virheIlmoitus);
         alert.show();
+    }
+
+    private boolean samanNiminenKategoriaJoOlemassa(String kategorianNimi) {
+        for(Kategoria k : kategoriat) {
+            if(k.getNimi().equals(kategorianNimi)) {
+                return true;
+            }
+        }
+        return false;
     }
 }

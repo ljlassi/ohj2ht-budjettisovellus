@@ -89,8 +89,7 @@ public class MainController implements Initializable {
         alkuPvmKentta.setValue(LocalDate.of(2026, 1, 1));
         loppuPvmKentta.setValue(LocalDate.now());
 
-        seuranta.lataaKategoriat();
-        seuranta.lataaTapahtumat();
+        seuranta.lataaDataTiedostosta();
 
         Kategoria esimerkkiKategoria;
 
